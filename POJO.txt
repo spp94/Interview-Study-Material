@@ -1,0 +1,76 @@
+POJO
+-----
+Plain Old Java Object
+1. Cannot extend anything.
+2. Cannot implement anything.
+3. Cannot have any annotations.
+4. class must be public.
+
+// Employee POJO class to represent entity Employee
+public class Employee
+{
+    // default field
+    String name;
+  
+    // public field
+    public String id;
+  
+    // private salary
+    private double salary;
+  
+    //arg-constructor to initialize fields
+    public Employee(String name, String id, 
+                             double salary)
+    {
+        this.name = name;
+        this.id = id;
+        this.salary = salary;
+    }
+  
+    // getter method for name
+    public String getName()
+    {
+        return name;
+    }
+  
+    // getter method for id
+    public String getId()
+    {
+        return id;
+    }
+  
+    // getter method for salary
+    public Double getSalary()
+    {
+        return salary;
+    }
+}
+
+In a Bean, we declare variables as private and have setter/getter and constructor. Whereas in POJO we only have variables declaration
+
+class MyBeanClass {
+    private int age;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public MyBeanClass(int age, String name) {
+        this.age = age;
+        this.name = name;
+    }
+}

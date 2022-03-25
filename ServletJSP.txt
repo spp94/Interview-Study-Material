@@ -1,0 +1,225 @@
+Maven
+------
+Maven is a build tool which contains lots of libraries.
+Whenever we create a Java application we need lots of dependencies like mysql connector, Spring, Hibernate dependency.
+We inform Maven that we need Spring and Hibernate dependency. That's it and Maven will do the download and installation for us.
+
+We can also copy the dependencies directly from the Maven Repository and paste it in the pom.xml
+
+
+POM is an acronym for Project Object Model. The pom. xml file contains information of project and configuration information for the maven
+to build the project such as dependencies, build directory, source directory, test source directory, plugin, goals etc.
+
+We can't write Java code inside HTML, so for this we have JSP in Java, .cshtml in C#. 
+To create a dynamic content, we have two ways:
+1. JSP
+2. Servlet
+
+Default, port number for Tomcat server is 8080.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+package com.telusko.web.dao;
+
+import java.sql.*;
+import com.telusko.web.model.Alien;
+
+public class AlienDao 
+{
+	
+	
+	public Alien getAlien(int aid)
+	{
+		Alien a = new Alien();
+		
+		try
+		{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/navin","root","root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from alien where aid=" + aid);
+			if(rs.next())
+			{
+				a.setAid(rs.getInt("aid"));
+				a.setAname(rs.getString("aname"));
+				a.setTech(rs.getString("tech"));
+			}
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
+		return a;
+	}
+	
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+package com.telusko.web.model;
+
+public class Alien 
+{
+	private int aid;
+	private String aname;
+	private String tech;
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+	public String getAname() {
+		return aname;
+	}
+	public void setAname(String aname) {
+		this.aname = aname;
+	}
+	public String getTech() {
+		return tech;
+	}
+	public void setTech(String tech) {
+		this.tech = tech;
+	}
+	@Override
+	public String toString() {
+		return "Alien [aid=" + aid + ", aname=" + aname + ", tech=" + tech + "]";
+	}
+	
+	
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+package com.telusko.web;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.telusko.web.dao.AlienDao;
+import com.telusko.web.model.Alien;
+
+/**
+ * Servlet implementation class GetAlienController
+ */
+public class GetAlienController extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int aid = Integer.parseInt(request.getParameter("aid"));
+		AlienDao dao  = new AlienDao();
+		Alien a1 = dao.getAlien(aid);
+		
+		// 1st way to send the response using RequestDispatcher
+		
+		request.setAttribute("alien", a1);
+		
+		RequestDispatcher rd = request.getRequestDispatcher("showAlien.jsp");
+		rd.forward(request, response);
+		
+		// 2nd way to send response using Session
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("alien", a1);
+		
+		response.sendRedirect("showAlien.jsp");
+	}
+
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+<%@page import="com.telusko.web.model.Alien"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body bgcolor="cyan">
+	
+	<%
+		Alien a1 = (Alien)session.getAttribute("alien");
+		out.println(a1);
+	%>
+	
+</body>
+</html>
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+<html>
+<body>
+<h2>Hello World!</h2>
+	<form action="getAlien">
+		<input type="text" name="aid">
+		<input type="submit">
+	</form>
+</body>
+</html>
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+JSP is also converted into a Servlet. Whenever we create a JSP and run it for the first time of course it will take sometime for building and converting into servlet.
+It means Servlet is faster than JSP. It's recommended that we should not be writing the business logic into the JSP. We should always use a Servlet here(It helps in processing data)
+So, JSP is best when you want to create a view.
+
+
+
+Add the following dependencies in pom.xml
+
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.27</version>
+</dependency>
+    <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+    <scope>provided</scope>
+</dependency>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

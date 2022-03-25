@@ -1,0 +1,128 @@
+                                                              Iterable(Interface) 
+			                                                     |
+				                                                 |
+  														     Collection(Interface) 
+															     |
+																 |
+				List(Interface)                    Queue(Interface)                   Set(Interface)                    
+                -> ArrayList				       -> PriorityQueue                   -> HashSet                        
+				-> LinkedList					   DeQueue(Interface)				  -> LinkedHashSet                  
+				-> Vector                          -> ArrayDeque                      SortedSet(Interface)               
+				-> Stack 															  -> TreeSet	         
+
+		
+  		       Map(Interface) 				
+               -> HashMap				
+               -> LinkedHashMap
+               SortedMap(Interface)
+               -> TreeMap
+
+
+
+-> Vectors are Synchronized whereas ArrayList is not Synchronized.				
+-> Vectors resize by 100% whereas ArrayList resize by 50%
+-> Initial capacity of both Vector and ArrayList is 10
+
+new ArrayList(int initialCapacity)
+new Vector(int initialCapacity)
+				
+
+import java.util.*;
+class A {
+    public static void main(String[] args) {
+        List<String> map = new ArrayList<>();
+        map.add("Shubham");
+        map.add("Sachin");
+        map.add("Vivek");
+        map.add("Mohit");
+
+        map.forEach((element) -> System.out.println(element));
+    }
+}
+
+
+-----------------------------------------------------------------------
+
+Different ways of iterating through lists
+
+import java.util.*;
+class A {
+    public static void main(String[] args) {
+        List<String> lists = new ArrayList<>();
+        lists.add("Sachin");
+        lists.add("Vivek");
+        lists.add("Mohit");
+        lists.add("Shubham");
+
+        // Using basic for loop
+        for(int i = 0; i < lists.size(); i++){
+            System.out.println(lists.get(i));
+        }
+        System.out.println("-----------");
+        // Using enhanced for loop
+        for(String list : lists){
+            System.out.println(list);
+        }
+        System.out.println("-----------");
+        // Using Iterator with for loop
+        for(Iterator iterator = lists.iterator() ; iterator.hasNext();){
+            System.out.println(iterator.next());
+        }
+        System.out.println("-----------");
+        // Using Iterator with while loop
+        Iterator iterator = lists.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+        System.out.println("-----------");
+        // Using lambda expressions
+        lists.forEach((list) -> System.out.println(list));
+    }
+}
+				
+
+// Sorting the lists 
+
+Collections.sort(lists);				
+Collections.reverse(lists);				
+
+
+ArrayList internally uses an array, LinkedList internally uses a DoublyLinkedList.
+LinkedList takes more memory as it saves the previous and next node reference as well.
+An ArrayList can act as a List whereas LinkedList can act as both List and Queue as it implements both List and DeQueue interface.
+ArrayList is better for storing and accessing data, whereas LinkedList is better for manipulating data.
+
+
+
+HashSet does not allow duplicate values.
+HashSet allow null values
+HashSet internally uses a HashMap
+HashSet is not synchronized and hence is not Thread safe.
+
+
+
+ConcurrentHashMap: It keeps a lock at a single index or a segment. Now since multiple thread can work on it, performance is relatively better.
+
+SynchronizedHashMap: It keeps a lock at the object level. Now since the lock is at object level, only one thread can work at a time. Poor performance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

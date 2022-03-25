@@ -1,0 +1,58 @@
+JUnit is a testing framework for Java programming language. It is important for test driven development.
+
+Unit testing is used to verify a small chunk of code by creating a path, function or a method.
+
+An Annotation is a special form of syntactic metadata that can be added to the java source code for better code readability.
+
+@Test         The Test annotation tells JUnit that the public void method can be run as a Test case.
+@Before       Annotating a public void method with @Before causes that the method to be run before each TestCase.
+@After        If you allocate external resources in a Before method, you need to release them after the test runs. Annotating the method with @After causes that method to be run after the Test method.
+@BeforeClass  Annotating a public static void method with @BeforeClass annotation causes it to be run once before any of the test methods in the class.
+@AfterClass   This will be executed after all the test methods are executed. This can be used to perform clean up activities.
+@Ignore       The Ignore annotation is used to ignore the test and that test will not be executed.
+
+
+
+Assert is a method used in determining pass or fail status of a test case. In Java all the assertions are in Assert class.
+
+
+assertEquals()
+assertNull()
+assertNotNull()
+assertTrue()
+assertFalse()
+assertSame()      check if it refers to the same reference
+assertNotSame()   
+
+
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class MyUnitTest {
+    String s1 = "Shubham";
+    String s2 = "Shubham";
+    String s3 = null;
+    int num1 = 10, num2 = 12;
+
+    @Test
+    public void stringTest(){
+        assertEquals(s1, s2);
+    }
+
+    @Test
+    public void nullCheck(){
+        assertNull(s3);
+        assertNotNull(s1);
+    }
+
+    @Test
+    public void checkNumbers(){
+        assertTrue(num1 < num2);
+        assertFalse(num2 < num1);
+    }
+}
+
+
+

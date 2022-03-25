@@ -1,0 +1,47 @@
+ACID Properties
+
+Atomicity
+----------
+
+Either ALL or NONE.
+
+Transaction
+Read(A)
+Write(A)
+Read(B)
+Write(B)
+
+Either the entire transaction will complete or will not be done at all if it fails at any point.
+Example: We choose Language, enter amount, then PIN. If the transaction fails we need to start it all over again.
+
+
+
+Consistency
+------------
+The state before and after the transaction should be same.
+
+A has Rs.2000 and Rs. 3000
+Initial Sum = 5000
+
+Now if A transfer Rs. 1000 to B, 
+
+A has Rs.1000 and Rs.4000
+Final Sum = 5000
+
+Hence it's a consistent transaction.
+
+Sometimes, it happens that we get the message for amount being debited from account. But the cash did not came out of ATM.
+This is a case of inconsistent transaction. Here, the transaction will be roll backed and we get back our money in account.
+
+
+Isolation
+----------
+All the transaction should happen in parallel, any other transaction should not impact each other.
+Example: When we go in a Hotel and there are many people ordering food. But our order is not being impacted by what the other person is ordering.
+
+
+
+Durability
+-----------
+
+The changes should be permanent. Whatever transaction happens it should be saved in the Database.

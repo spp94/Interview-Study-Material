@@ -1,0 +1,25 @@
+enum Products {
+    TSHIRT(4, 399),
+    PANT(4, 760),
+    JACKET(5, 1599),
+    SUIT(3, 4500),
+    SHOES(5, 1299);
+
+    private int rating;
+    private double price;
+
+    Products(int rating, double price){
+        this.price = price;
+        this.rating = rating;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(Products.JACKET);
+        System.out.println(Products.SUIT);
+        for(Products products : Products.values()){
+            System.out.println(products);
+        }
+    }
+}

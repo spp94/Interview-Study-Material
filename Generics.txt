@@ -1,0 +1,51 @@
+Generics
+---------
+
+Let's suppose we want to create a printer class which can take Integer, String, Character, Double value.
+
+public class IntegerPrint {
+    Integer value;
+    public IntegerPrint(Integer value){
+        this.value = value;
+    }
+    public void print(){
+        System.out.println(value);
+    }
+}
+
+
+class StringPrint {
+    String value;
+    public StringPrint(String value){
+        this.value = value;
+    }
+    public void print(){
+        System.out.println(value);
+    }
+}
+
+
+But, wait is it a good practice of writing the same code so many times for only changes in data type.
+That's where Java came with the concept of Generics.
+
+
+class Printer <T>{
+   private T value;
+   public Printer(T value){
+       this.value = value;
+    }
+    public void print(){
+        System.out.println(value);
+    }
+}
+
+
+public class Test {
+    public static void main(String[] args) {
+        Printer<Integer> p1 = new Printer<Integer>(2);
+        p1.print();
+        Printer<String> p2 = new Printer<String>("Shubham");
+        p2.print();
+    }
+}
+

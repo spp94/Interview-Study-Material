@@ -1,0 +1,808 @@
+Hibernate is one of the best available ORM frameworks for Java.
+Everything in the world revolves around the data. Now to connect the data(Database) with code we need a connector.
+In hibernate we are fetching data from the application and storing it in the Database. 
+Hibernate is an ORM tool used for persisting the data. 
+We wanted a solution where we can store data in SQL without knowing SQL.
+
+
+Table: 
+
+STUDENT
+
+ROLL_NUMBER   NAME   MARKS
+11             A      78
+12             B      87
+13             C      65
+
+
+In Java, we represent it as a class
+
+class Student {
+int roll_number;
+String name;
+int marks;
+}
+
+Student s1, s2, s3;
+
+Here class is the table and objects are the rows.
+
+Every table in hibernate should have a Primary key.
+
+
+
+Alien.java
+-----------
+
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Alien_Table")
+public class Alien {
+	@Id
+	private int aid;
+	@Transient // this column will not be saved in the database
+	private String name;
+	@Column(name = "Alien_Color")
+	private String acolor;
+	
+	public Alien(int aid, String name, String acolor) {
+		super();
+		this.aid = aid;
+		this.name = name;
+		this.acolor = acolor;
+	}
+	
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getAcolor() {
+		return acolor;
+	}
+	public void setAcolor(String acolor) {
+		this.acolor = acolor;
+	}
+}
+
+
+
+
+App.java
+--------
+
+
+Alien telusko = new Alien();
+telusko.setAid(102);
+telusko.setAName("Navin");
+telusko.setAColor("Green");
+
+Configuration con = new Configuration().configure().addAnnotatedClass(Alien.class);
+ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+SessionFactory sf = con.buildSessionFactory(registry); 
+Session session = sf.openSession();
+
+Transaction transaction = session.beginTransaction();
+
+// To save data 
+session.save(telusko);
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 102);
+
+transaction.commit();
+
+
+
+
+
+
+hibernate.cfg.xml
+------------------
+
+<property name = "hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+<property name = "hibernate.connection.url">jdbc:mysql://localhost:3306/RESTDB</property>
+<property name = "hibernate.connection.username">root</property>
+<property name = "hibernate.connection.password">admin</property>
+<property name = "hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+<property name = "hbm2ddl">update</property>
+<property name = "show_sql">true</property>
+
+
+
+
+How to use Embeddable Object
+------------------------------
+
+
+AlienName.java
+---------------
+
+@Embeddable
+public class AlienName {
+	private String fName;
+	private String mName;
+	private String lName;
+	
+	public String getfName() {
+		return fName;
+	}
+	public void setfName(String fName) {
+		this.fName = fName;
+	}
+	public String getmName() {
+		return mName;
+	}
+	public void setmName(String mName) {
+		this.mName = mName;
+	}
+	public String getlName() {
+		return lName;
+	}
+	public void setlName(String lName) {
+		this.lName = lName;
+	}
+	@Override
+	public String toString() {
+		return "AlienName [fName=" + fName + ", mName=" + mName + ", lName=" + lName + "]";
+	}
+	public AlienName(String fName, String mName, String lName) {
+		super();
+		this.fName = fName;
+		this.mName = mName;
+		this.lName = lName;
+	}
+}
+
+
+
+App.java
+--------
+
+AlienName an = new AlienName();
+sn.setFName = "Shubham";
+sn.setMName = "Prakash";
+sn.setLName = "Pandey";
+
+
+Alien telusko = new Alien();
+telusko.setAid(102);
+telusko.setAlienName(an);
+telusko.setAColor("Green");
+
+Configuration con = new Configuration().configure().addAnnotatedClass(Alien.class);
+ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+SessionFactory sf = con.buildSessionFactory(registry); 
+Session session = sf.openSession();
+
+Transaction transaction = session.beginTransaction();
+
+// To save data 
+session.save(telusko);
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 102);
+
+transaction.commit();
+
+
+
+This, will createa table structure as:
+
+AId     FName   MName    LName     Color
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Mapping Relations Theory
+-------------------------
+
+Maintaining the relationships is not difficult in SQL or any RDMS. But how do we maintain it in the Hibernate?
+
+
+@Entity
+class Student {
+	@Id
+	private int rollNumber;
+	private String name;
+	private int marks;
+	
+	// getters and setters
+}
+
+@Entity
+class Laptop{
+	@Id
+	private String lName;
+	
+	// getters and setters
+}
+
+
+This will create 2 tables, Laptop and Student
+------------------------------------------------------
+
+@Entity
+class Student {
+	@Id
+	private int rollNumber;
+	private String name;
+	private int marks;
+	@OneToOne
+	private Laptop laptop;
+	// getters and setters
+}
+
+@Entity
+class Laptop{
+	@Id
+	private int lId;
+	private String lName;
+	
+	// getters and setters
+}
+
+
+This will also create 2 tables but Student table will have information about the Student class,
+Student, Laptop
+
+Student
+--------
+rollNumber   name    marks   laptop_id
+
+Laptop
+-------
+lid   lname
+
+-------------------------------------------------------------
+
+
+@Entity
+class Student {
+	@Id
+	private int rollNumber;
+	private String name;
+	private int marks;
+	@ManyToMany
+	private List<Laptop> laptop;
+	// getters and setters
+}
+
+@Entity
+class Laptop{
+	@Id
+	private int lId;
+	private String lName;
+	@ManyToMany
+	private List<Student> student;
+	
+	// getters and setters
+}
+
+
+
+
+This, will create 4 tables:
+
+Laptop
+Student
+Laptop_Student
+Student_Laptop
+
+
+Student class and Laptop class both will generate the mapping table, maybe because of ego.
+So we should inform it that who'll be doing the mapping
+
+
+@Entity
+class Student {
+	@Id
+	private int rollNumber;
+	private String name;
+	private int marks;
+	@ManyToMany(mappedBy="student")
+	private List<Laptop> laptop;
+	// getters and setters
+}
+
+
+
+
+--------------------------------------------------------------------------------------------------
+
+The moment we get a task,
+If we wait for the deadline to do it, that's a Lazy Loading
+If we do it before deadline, that's Eager Loading.
+
+
+
+App.java
+--------
+
+AlienName an = new AlienName();
+sn.setFName = "Shubham";
+sn.setMName = "Prakash";
+sn.setLName = "Pandey";
+
+
+Alien telusko = new Alien();
+telusko.setAid(102);
+telusko.setAlienName(an);
+telusko.setAColor("Green");
+
+Configuration con = new Configuration().configure().addAnnotatedClass(Alien.class);
+ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+SessionFactory sf = con.buildSessionFactory(registry); 
+Session session = sf.openSession();
+
+Transaction transaction = session.beginTransaction();
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 102);
+
+transaction.commit();
+
+
+
+
+Here, by default it will only fetch only the Alien details. This is lazy loading.
+It will fire a query like: select aid, aname, acolor from alien
+
+
+
+App.java
+--------
+
+AlienName an = new AlienName();
+sn.setFName = "Shubham";
+sn.setMName = "Prakash";
+sn.setLName = "Pandey";
+
+
+Alien telusko = new Alien();
+telusko.setAid(102);
+telusko.setAlienName(an);
+telusko.setAColor("Green");
+
+Configuration con = new Configuration().configure().addAnnotatedClass(Alien.class);
+ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+SessionFactory sf = con.buildSessionFactory(registry); 
+Session session = sf.openSession();
+
+Transaction transaction = session.beginTransaction();
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 102);
+Collection<Laptop> laps = alien.getLaptop();
+
+transaction.commit();
+
+
+Now when asked for the laptop details, only then it will load the laptop details. 
+Now it will fire
+
+select aid, aname, acolor from alien
+select lid, lname, price from Laptop
+
+Here, the user will see a bit delay as it will fire two queries.
+
+
+To make it eager we just need to specify fetch=FetchType.EAGER
+
+@Entity
+class Student {
+	@Id
+	private int rollNumber;
+	private String name;
+	private int marks;
+	@ManyToMany(mappedBy="student", fetch = FetchType.EAGER)
+	private List<Laptop> laptop;
+	// getters and setters
+}
+
+
+Now it will the laptop and Student details all in one query using a left outer join.
+
+
+
+Hibernate Caching
+-------------------
+
+1. The one of the advantage of using Hibernate over JDBC is ORM.
+2. One of the other important advantage is Caching.
+
+What is caching?
+-----------------
+
+Now let's suppose we need a data. So rather than hitting the server and getting those data we can store it in a cache and use it.
+
+
+               Get all employees                                       Select * from Employees
+Client    ---------------------------->       Application           ---------------------------------->    Database
+                  session1               (Hibernate by default 
+				                        provides a First Level Cache)
+										
+										
+Each of the session has there own 1st Level cache. The good thing is hibernate provides it by default.
+
+
+
+
+
+               Get all employees                                       Select * from Employees
+Client    ---------------------------->       Application           ---------------------------------->    Database
+                  session1               
+                                                                       Select * from Employees
+          ---------------------------->                             ---------------------------------->
+                  session2
+
+In this case we can use a 2nd level cache. For this we need to do some extra configuration. We use ehcache for 2nd level caching.
+Need to download hibernate-ehcache.jar and add the dependency in the pom.xml file.
+
+Add a configuration in the hibernate.cfg.xml file, By default 2nd level caching is disabled and we need to enable it.
+
+
+
+App.java
+---------
+
+Configuration con = new Configuration().configure().addAnnotatedClass(Alien.class);
+ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+SessionFactory sf = con.buildSessionFactory(registry); 
+Session session1 = sf.openSession();
+
+session1.beginTransaction();
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 101);
+System.out.println(alien);
+
+session1.getTransaction().commit();
+
+
+It fires: select * from Alien where aid = 101;
+
+------------------------------------------------------------
+
+session1.beginTransaction();
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 101);
+System.out.println(alien);
+Alien alien = (Alien) session.get(Alien.class, 102);
+System.out.println(alien);
+session1.getTransaction().commit();				
+
+
+It fires: select * from Alien where aid = 101;
+      and select * from Alien where aid = 102;
+
+
+
+-----------------------------------------------------------
+
+Session session1 = sf.openSession();
+
+session1.beginTransaction();
+
+// To fetch data
+Alien alien = (Alien) session.get(Alien.class, 101);
+System.out.println(alien);
+
+session1.getTransaction().commit();
+session1.close();
+
+Session session2 = sf.openSession();
+
+session2.beginTransaction();
+
+// To fetch data
+Alien alien = (Alien) session2.get(Alien.class, 101);
+System.out.println(alien);
+
+session2.getTransaction().commit();
+session2.close();
+
+
+
+It will also fire two requests:
+select * from Alien where aid = 101;
+select * from Alien where aid = 101;
+
+
+-------------------------------------------------------------
+
+
+
+2nd Level caching
+------------------
+
+Step1: Now go to pom.xml and add a dependency for ehcache(rest.sf.ehcache) and hibernate-ehcache(org.hibernate)
+
+Step2: Go to hibernate-cfg.xml file:
+
+<property name="hibernate.cache.use_second_level_cache">true</property>
+<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+
+Step3: Till now it won't work as all the Entities are not allowed to cache. We need some extra annotations for it.
+
+
+@Entity
+@Cacheable // Helps to cache
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY) // Add caching strategy to a root entity for a collection.
+class Student {
+	@Id
+	private int rollNumber;
+	private String name;
+	private int marks;
+	@ManyToMany(mappedBy="student")
+	private List<Laptop> laptop;
+	// getters and setters
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Caching Level 2 with Query
+-----------------------------
+
+Step1:  Add a property in hibernate-cfg.xml file.
+        <property name = "hibernate.cache.use_query_cache">true</property>
+
+		
+Step2: 
+
+		
+Session session1 = sf.openSession();
+
+session1.beginTransaction();
+
+// To fetch data
+Query q1 = session1.createQuery("from Alien where aid = 101");
+q1.setCacheable(true);
+Alien alien = (Alien) q1.uniqueResult();
+System.out.println(alien);
+
+session1.getTransaction().commit();
+session1.close();
+
+Session session2 = sf.openSession();
+
+session2.beginTransaction();
+
+Query q2 = session2.createQuery("from Alien where aid = 101");
+q2.setCacheable(true);
+Alien alien1 = (Alien) q2.uniqueResult();
+System.out.println(alien1);
+
+session2.getTransaction().commit();
+session2.close();
+
+
+----------------------------------------------------------------------------------------------------
+
+HQL stands for Hibernate Query Language
+
+Why do we need this query when we can do operations using session.save(), session.get(Alien.class, 101) etc..?
+
+What if we need data from multiple tables using a join? Here the HQL comes handy
+
+            SQL                                               HQL
+
+Select rollNumber from Student                 Select rollNumber from Student
+        column        tablename                        property        Class
+		
+		
+select * from student                          from student
+
+
+
+ResultSet rs = statement.executeQuery(sql);    List<Student> list = query.list();
+while(rs.next()){                              for(Student student : list)
+----------                                     {
+----------                                     }
+}
+
+
+
+How to fetch all the data?
+
+Query query = session.createQuery("from Student");
+List<Student> students = query.list();	
+
+
+How to fetch a particular result?
+
+Query query = session.createQuery("from Student where rollNumber = 1");
+Student student = (Student)query.uniqueResult();	
+
+
+How to fetch some columns?
+
+Query query = session.createQuery("select rollNumber, name, marks from Student");
+List<Object[]> students = List<Object[]>query.list();
+for(Object[] student : students)
+{
+}
+
+
+With aggregate functions?
+
+Query query = session.createQuery("Select sum(marks) from Student");
+int student = (int)query.uniqueResult();
+
+
+How to pass parameters?
+
+int roll = 1;
+Query query = session.createQuery("from Student where rollNumber = :roll");
+query.setParameter("roll", roll);
+Student student = (Student)query.uniqueResult();
+
+
+How to execute SQL query in Hibernate?
+
+SQLQuery query = session.createSQLQuery("Select * from student where marks > 70");
+query.addEntity(Student.class);
+List<Student> students = query.list();
+for(Student student : students){
+//
+//
+}
+
+
+How to fetch some rows using SQL in Hibernate?
+
+SQLQuery query = session.createSQLQuery("Select name, marks from student where marks > 70");
+query.setResultTransaformer(Criteria.ALIAS_TO_ENTITY_MAP);
+List students = query.list();
+for(Object student : students){
+Map m = (Map)o;
+System.out.println(m.get("name") + m.get("marks"));
+//
+}
+
+
+SQL Query in Hibernate is known as Native Query
+
+-----------------------------------------------------------------------------------------------------------------
+
+Hibernate Object states / Persistence life cycle
+
+
+New  ---->  new Object   ---->    Transient     ----------------------------->     Garbage Collector
+ |                                   |
+ |									 |
+get(), find()				  save(), persist()
+ |								     |
+ |                                   |
+ | --------------------------->  Persistence	    ----  remove(), delete()  ---->		    Removed					 
+                                     |
+									 |
+								  detach()
+								     |
+									 |
+								  Detached
+
+
+
+Alien alien = new Alien();  // This is new state 
+alien.setName("ABC");
+alien.setMarks("76");
+
+As soon as you assign value to the object, it is the Transient state
+
+session.save(alien); // This is Persistence state
+session.remove(); // This is removed state
+
+alien.setName("DEF"); // The value saved will be DEF as it is still in persistent state and will fire an update query 
+
+session.getTransaction().commit();
+
+session.detach() // This is detached state
+
+alien.setName("GHI");  Now if we don't want this value to be saved, we will detach it from the session
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Hibernate GET VS LOAD
+-----------------------
+
+Student student = session.get(Student.class, 6);
+System.out.println(student);
+
+Student student = session.load(Student.class, 6);
+System.out.println(student);
+
+1. GET will load and get the object to us, whereas load will only give us the proxy object and load only when we try to use it.
+GET will fire 
+Select * from Student where rollNumber = 6
+WHEREAS, LOAD will not fire any request directly.
+
+2. If the record does not exists, then we will get null. Whereas for load we get an object not found error.
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+What is JPA and it's implementation?
+
+JPA stands for the Java Persistent API.
+Everything around this world revolves around the data. So we can persist the data in a file or database.
+One way of doing that is using JDBC.
+
+JPA is a specification for achieving ORM. We can use Hibernate, iBatis and TopLink to achieve ORM. Now switching from Hibernate to IBatis won't be difficult as we are only changing
+the tool wheres the specification remains the same(JPA)
+
+
+Alien.java
+-----------
+
+Step 1:  Create an Entity class
+
+@Entity
+@Table
+public class Alien{
+@Id
+private int aid;
+private String aname;
+private String tech;
+
+// constructor and getter setters
+}
+
+
+Step2: Add a hibernate configuration in pom.xml
+
+Step3: Add a new xml file in src/main/resources/META-INF as persistence.xml
+
+<persistence-unit name = "pu">
+<properties>
+<property name = "javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+<property name = "javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/TESTDB" />
+<property name = "javax.persistence.jdbc.user" value="root" />
+<property name = "javax.persistence.jdbc.password" value="admin" />
+</properties>
+</persistence-unit>
+
+
+Step4: In App.java
+
+// To fetch a record 
+
+EntityManagerFactory ef = Persistence.createEntityManagerFactory("pu");
+EntityManager em = ef.createEntityManager();
+
+Alien alien = em.get(Alien.class,4);  
+System.out.println(alien);
+
+
+---------------------------------------------------------------------------
+
+// To save a record 
+
+Alien alien = new Alien();
+alien.setAName("Navin");
+alien.setAColor("Red");
+alien.setAid("3");
+
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+EntityManager em = emf.createEntityManager();
+
+em.getTransaction().begin();
+
+em.persist(alien);
+
+em.getTransaction().commit();
+
+System.out.println(alien);
+

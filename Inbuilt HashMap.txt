@@ -1,0 +1,108 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.LinkedList;
+
+class MyHashMap<K, V> {
+    private class Entry{
+        private K key;
+        private V value;
+
+        public Entry(K key, V value){
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private LinkedList<Entry>[] map;
+    private int N = 16;
+    private int size = 0;
+
+    public MyHashMap(){
+        map = new LinkedList[N];
+    }
+
+    public int getBucketIndex(K key){
+        return Math.abs(key.hashCode()) % (N - 1);
+    }
+
+    public int size(){
+        return size;
+    }
+
+    public boolean isEmpty(){
+        return size == 0;
+    }
+
+    public V get(K key){
+        int bucketIndex = getBucketIndex(key);
+        if(map[bucketIndex] == null){
+            return null;
+        }
+        for(Entry entry : map[bucketIndex]){
+            if(entry.key == key){
+                return entry.value;
+            }
+        }
+        return null;
+    }
+
+    public void remove(K key){
+        int bucketIndex = getBucketIndex(key);
+        if(map[bucketIndex] == null){
+            return;
+        }
+
+        else {
+            Entry entryToBeRemoved = null;
+            for(Entry entry : map[bucketIndex]){
+                if(entry.key == key){
+                    entryToBeRemoved = entry;
+                    break;
+                }
+            }
+
+            if(entryToBeRemoved == null){
+                return;
+            }
+            map[bucketIndex].remove(entryToBeRemoved);
+            size--;
+        }
+    }
+
+    public void put(K key, V value){
+        int bucketIndex = getBucketIndex(key);
+        size++;
+        if(map[bucketIndex] == null){
+            map[bucketIndex] = new LinkedList<>();
+            map[bucketIndex].add(new Entry(key, value));
+            return;
+        }
+        else {
+            for(Entry entry : map[bucketIndex]){
+                if(entry.key == key){
+                    entry.value = value;
+                    return;
+                }
+            }
+
+            map[bucketIndex].add(new Entry(key, value));
+        }
+    }
+}
+
+public class Test{
+    public static void main(String[] args) {
+        MyHashMap<String, Integer> map = new MyHashMap<>();
+        System.out.println(map.size());
+        map.put("Shubham", 100);
+        map.put("Satyam", 99);
+        map.put("Archana", 98);
+        map.put("Raaz", 97);
+        map.put("Sowmya", 96);
+        map.remove("Satyam");
+        System.out.println(map.size());
+        System.out.println(map.get("Shubham"));
+        System.out.println(map.get("Satyam"));
+        System.out.println(map.get("A"));
+    }
+}

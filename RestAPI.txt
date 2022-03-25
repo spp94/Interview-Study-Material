@@ -1,0 +1,658 @@
+Spring Boot is built on the top of the spring and contains all the features of spring. And is becoming a favorite of developers these days because of its 
+rapid production-ready environment which enables the developers to directly focus on the logic instead of struggling with the configuration and setup. 
+Spring Boot is a microservice-based framework and making a production-ready application in it takes very little time. 
+
+
+Java persistence API is like an interface that contains most of the methods that are used for data manipulation in the MySQL table and hibernate is the
+implementation of these methods, So we don’t have to create any method for inserting the data in the MySQL
+
+
+JpaRepository<Employee, Long> JpaRepository is a JPA-specific extension of the Repository. It contains the full API of CrudRepository and PagingAndSortingRepository. 
+So it contains API for basic CRUD operations and also API for pagination and sorting.
+
+
+Spring is one of the most popular Java EE frameworks. It is an open-source lightweight framework that allows Java EE 7 developers to build simple, reliable,
+and scalable enterprise applications. This framework mainly focuses on providing various ways to help you manage your business objects. It made the development
+of Web applications much easier than compared to classic Java frameworks and application programming interfaces (APIs), such as Java database connectivity (JDBC),
+JavaServer Pages(JSP), and Java Servlet. This framework uses various new techniques such as Aspect-Oriented Programming (AOP), Plain Old Java Object (POJO), and 
+dependency injection (DI), to develop enterprise applications. 
+
+
+JPA(Java Persistence API): JPA is like a bridge between the Spring application Models and the relational database that is used for managing and accessing the data
+between the Object-Oriented models of the Spring application and the database. In simple terms, we have to define all methods for inserting the records in the MySQL
+table if we don’t use the JPA. JPA doesn’t perform any kind of specific operations it provides various types of methods without implementation, just like an interface
+that contains various methods like counting the records, deleting the specific record. etc.
+
+Hibernate is a java framework and ORM (Object Relation Mapping)  tool that is used to provide the implementation of the JPA methods.
+
+
+Design architecture for a SpringBoot application
+-------------------------------------------------
+Example: All the tasks comes to the (Manager)Controller first, the Manager then forwards it to the appropriate Lead(Service), the Lead will then forward it to the engineer(DAO).
+Waiter(Controller) takes our order and sends it to appropriate Chef(Service), Chef interacts with the other layer of team(Repository) if they need any groceries from the store.
+
+  Client
+(Mobile App/
+Web browser)
+    |
+	|
+	|
+	|
+Controller
+    |
+	|
+	|
+	|
+ Service
+    |
+	|
+	|
+	|
+Repository
+ DAO layer
+    |
+	|
+	|
+	|
+ Database
+ 
+
+
+The REST stands for REpresentational State Transfer.
+
+Let's understand the meaning of each word in the REST acronym.
+
+ State means data
+ REpresentational means formats (such as XML, JSON, YAML, HTML, etc)
+ Transfer means carry data between consumer and provider using HTTP protocol
+
+ 
+ 
+ 
+HTTP Methods
+-------------
+
+GET    : Used to fetch a resource
+POST   : Used to create a resource
+PUT    : Used to update the full resource
+PATCH  : Used to update the resource partially
+DELETE : Used to delete a resource
+
+When we only need to update the email address for example, we will go ahead with PATCH. If we need to update the full resource, we can use PUT
+
+
+We can use Spring Tool Suite(STS) or https://start.spring.io/ to create the project. STS comes with in build initializer.
+
+We add a dependency for 
+
+SpringWeb: Build web including Restful, applications using Spring MVC. Uses Tomcat as the default embedded container.
+Spring Data JPA: Persist data in SQL stores with Java Persistence Application using Spring Data and Hibernate. 
+                 It provides a framework which works together with JPA and provides a complete abstraction over the Data Access Layer in a project. 
+				 Spring Data JPA brings in a concept of JPA Repositories a set of Interfaces which defines query methods.
+				 
+MySQL driver: It helps us in connecting to the MySQL database.
+Lombok: Java annotation library which helps to reduce reduce boilerplate code.
+
+Lets use lombok library to reduce the boilerplate code such as getters, setters, constructors, toString, equals and hashcode methods for Java class.
+
+@Data (lombok.Data package)
+
+(javax.persistence package)
+@Entity annotation specifies that this class is an Entity
+
+@Table annotation specifies the table in the database with which the entity is mapped to.
+@Table(name="Employees")
+If we don't specify the @Table annotation it will map the entity to the table with class name
+
+@Id annotation specifies the primary key of the entity.
+
+@GeneratedValue annotation specifies the generation strategies for the values of primary keys.
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+
+@Column(name="first_name", nullable=false)
+
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long>
+
+Spring Data JPA internally provides @Repository Annotation so we no need to add @Repository annotation to EmployeeRepository interface
+
+By default Spring Data JPA made JPARepository methods transactional. So we don't need to add @Transactional annotation in the service class
+
+
+Basically we have two types of Dependency Injection:
+1. Setter-based dependency injection.
+2. Constructor-based dependency injection.
+
+Starting with Spring 4.3, if a class, which is configured as a Spring Bean, has only one constructor , @Autowired annotation can be omitted 
+and Spring will use that Constructor and inject all the necessary dependencies.
+
+
+@RestController is a convenient annotation that combines @Controller and @ResponseBody, which eliminates the need to annotate every request handling method of the controller
+with the @ResponseBody annotation
+
+@RequestBody annotation allows us to retrieve the requests body and automatically convert it into java object.
+
+    
+
+
+EmployeeController
+-------------------
+
+package net.javaguides.springboot.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import net.javaguides.springboot.model.Employee;
+import net.javaguides.springboot.service.EmployeeService;
+
+@RestController
+@RequestMapping("/api/employees")
+public class EmployeeController {
+	
+	private EmployeeService employeeService;
+
+	public EmployeeController(EmployeeService employeeService) {
+		super();
+		this.employeeService = employeeService;
+	}
+	
+	// build create employee REST API
+	@PostMapping()
+	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee){
+		return new ResponseEntity<Employee>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
+	}
+	
+	// build get all employees REST API
+	@GetMapping
+	public List<Employee> getAllEmployees(){
+		return employeeService.getAllEmployees();
+	}
+	
+	// build get employee by id REST API
+	// http://localhost:8080/api/employees/1
+	@GetMapping("{id}")
+	public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") long employeeId){
+		return new ResponseEntity<Employee>(employeeService.getEmployeeById(employeeId), HttpStatus.OK);
+	}
+	
+	// build update employee REST API
+	// http://localhost:8080/api/employees/1
+	@PutMapping("{id}")
+	public ResponseEntity<Employee> updateEmployee(@PathVariable("id") long id
+												  ,@RequestBody Employee employee){
+		return new ResponseEntity<Employee>(employeeService.updateEmployee(employee, id), HttpStatus.OK);
+	}
+	
+	// build delete employee REST API
+	// http://localhost:8080/api/employees/1
+	@DeleteMapping("{id}")
+	public ResponseEntity<String> deleteEmployee(@PathVariable("id") long id){
+		
+		// delete employee from DB
+		employeeService.deleteEmployee(id);
+		
+		return new ResponseEntity<String>("Employee deleted successfully!.", HttpStatus.OK);
+	}
+	
+}
+
+
+
+ResourceNotFoundException
+--------------------------
+
+package net.javaguides.springboot.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String resourceName;
+	private String fieldName;
+	private Object fieldValue;
+	
+	public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
+		super(String.format("%s not found with %s : '%s'", resourceName, fieldName, fieldValue));
+		this.resourceName = resourceName;
+		this.fieldName = fieldName;
+		this.fieldValue = fieldValue;
+	}
+	
+	public String getResourceName() {
+		return resourceName;
+	}
+	
+	public String getFieldName() {
+		return fieldName;
+	}
+	
+	public Object getFieldValue() {
+		return fieldValue;
+	}
+	
+}
+
+
+
+Employee.java
+---------------
+
+package net.javaguides.springboot.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name="employees")
+public class Employee {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	
+	@Column(name = "first_name", nullable = false)
+	private String firstName;
+	
+	@Column(name = "last_name")
+	private String lastName;
+	
+	@Column(name = "email")
+	private String email;
+}
+
+
+
+
+Hibernate provides some default annotations to be used,
+
+@Entity
+ @Table(name = "employees")
+ public class Employee {
+ 
+     private long id;
+ 
+     @NotNull
+     @Size(min = 2, message = "First Name should have atleast 2 characters")
+     private String firstName;
+  
+     @NotNull
+     @Size(min = 2, message = "Last Name should have atleast 2 characters")
+     private String lastName;
+  
+     @Email
+     @NotBlank
+     private String emailId;
+  
+     @NotNull
+     @Size(min = 2, message = "Passport should have atleast 2 characters")
+     private String passportNumber;
+
+
+
+EmployeeRepository.java
+-------------------------
+
+package net.javaguides.springboot.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import net.javaguides.springboot.model.Employee;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long>{
+
+}
+
+
+
+
+EmployeeService.java
+---------------------
+
+package net.javaguides.springboot.service;
+
+import java.util.List;
+
+import net.javaguides.springboot.model.Employee;
+
+public interface EmployeeService {
+	Employee saveEmployee(Employee employee);
+	List<Employee> getAllEmployees();
+	Employee getEmployeeById(long id);
+	Employee updateEmployee(Employee employee, long id);
+	void deleteEmployee(long id);
+}
+
+
+
+EmployeeServiceImpl.java
+--------------------------
+
+package net.javaguides.springboot.service.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import net.javaguides.springboot.exception.ResourceNotFoundException;
+import net.javaguides.springboot.model.Employee;
+import net.javaguides.springboot.repository.EmployeeRepository;
+import net.javaguides.springboot.service.EmployeeService;
+
+@Service
+public class EmployeeServiceImpl implements EmployeeService{
+
+	private EmployeeRepository employeeRepository;
+	
+	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+		super();
+		this.employeeRepository = employeeRepository;
+	}
+
+	@Override
+	public Employee saveEmployee(Employee employee) {
+		return employeeRepository.save(employee);
+	}
+
+	@Override
+	public List<Employee> getAllEmployees() {
+		return employeeRepository.findAll();
+	}
+
+	@Override
+	public Employee getEmployeeById(long id) {
+//		Optional<Employee> employee = employeeRepository.findById(id);
+//		if(employee.isPresent()) {
+//			return employee.get();
+//		}else {
+//			throw new ResourceNotFoundException("Employee", "Id", id);
+//		}
+		return employeeRepository.findById(id).orElseThrow(() -> 
+						new ResourceNotFoundException("Employee", "Id", id));
+		
+	}
+
+	@Override
+	public Employee updateEmployee(Employee employee, long id) {
+		
+		// we need to check whether employee with given id is exist in DB or not
+		Employee existingEmployee = employeeRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Employee", "Id", id)); 
+		
+		existingEmployee.setFirstName(employee.getFirstName());
+		existingEmployee.setLastName(employee.getLastName());
+		existingEmployee.setEmail(employee.getEmail());
+		// save existing employee to DB
+		employeeRepository.save(existingEmployee);
+		return existingEmployee;
+	}
+
+	@Override
+	public void deleteEmployee(long id) {
+		
+		// check whether a employee exist in a DB or not
+		employeeRepository.findById(id).orElseThrow(() -> 
+								new ResourceNotFoundException("Employee", "Id", id));
+		employeeRepository.deleteById(id);
+	}
+	
+}
+
+
+----------------------------------------------------------------------------------------------
+
+application.properties
+
+server.port = 9090
+spring.datasource.url = jdbc:mysql://localhost:3306/RESTDB
+spring.datasource.username = root
+spring.datasource.password = admin
+spring.jpa.hibernate.ddl-auto = update
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
+spring.jpa.show-sql=true
+
+
+3306 is the port number where the MySQL instance is running. Change it to the port number where your instance is running.
+MySQL5InnoDBDialect is a dialect used to inform Spring Boot of the database being used. Based on this, Spring Boot will generate SQL queries for that particular database.
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+application.properties
+-----------------------
+
+spring.datasource.url=jdbc:mysql://localhost:3306/demo?useSSL=false
+spring.datasource.username=root
+spring.datasource.password=Mysql@123
+
+// Dialect is used by Hibernate to create sQL queries. 
+
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+
+spring.jpa.hibernate.ddl-auto = create-drop
+
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+
+
+ProductRepository
+------------------
+
+import com.springboot.crud.example.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product,Integer> {
+    Product findByName(String name);
+}
+
+
+Spring Data JPA query methods are the most powerful methods, we can create query methods to select the records from the database without writing SQL queries.
+Behind the scenes, Spring Data JPA will create SQL queries based on the query method and execute the query for us.
+
+
+
+ProductService
+---------------
+
+import com.springboot.crud.example.entity.Product;
+import com.springboot.crud.example.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProductService {
+    @Autowired
+    private ProductRepository repository;
+
+    public Product saveProduct(Product product) {
+        return repository.save(product);
+    }
+
+    public List<Product> saveProducts(List<Product> products) {
+        return repository.saveAll(products);
+    }
+
+    public List<Product> getProducts() {
+        return repository.findAll();
+    }
+
+    public Product getProductById(int id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    public Product getProductByName(String name) {
+        return repository.findByName(name);
+    }
+
+    public String deleteProduct(int id) {
+        repository.deleteById(id);
+        return "product removed !! " + id;
+    }
+
+    public Product updateProduct(Product product) {
+        Product existingProduct = repository.findById(product.getId()).orElse(null);
+        existingProduct.setName(product.getName());
+        existingProduct.setQuantity(product.getQuantity());
+        existingProduct.setPrice(product.getPrice());
+        return repository.save(existingProduct);
+    }
+}
+
+
+
+Product.java
+-------------
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "PRODUCT_TBL")
+public class Product {
+
+    @Id
+    @GeneratedValue
+    private int id;
+    private String name;
+    private int quantity;
+    private double price;
+}
+
+
+
+
+
+ProductController
+------------------
+
+import com.springboot.crud.example.entity.Product;
+import com.springboot.crud.example.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class ProductController {
+
+    @Autowired
+    private ProductService service;
+
+    @PostMapping("/addProduct")
+    public Product addProduct(@RequestBody Product product) {
+        return service.saveProduct(product);
+    }
+
+    @PostMapping("/addProducts")
+    public List<Product> addProducts(@RequestBody List<Product> products) {
+        return service.saveProducts(products);
+    }
+
+    @GetMapping("/products")
+    public List<Product> findAllProducts() {
+        return service.getProducts();
+    }
+
+    @GetMapping("/productById/{id}")
+    public Product findProductById(@PathVariable int id) {
+        return service.getProductById(id);
+    }
+
+    @GetMapping("/product/{name}")
+    public Product findProductByName(@PathVariable String name) {
+        return service.getProductByName(name);
+    }
+
+    @PutMapping("/update")
+    public Product updateProduct(@RequestBody Product product) {
+        return service.updateProduct(product);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable int id) {
+        return service.deleteProduct(id);
+    }
+}
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Spring Boot REST API Pagination and Sorting Example
+
+
+To use paging and sorting APIs provided by Spring Data JPA, your repository interface must extend the PagingAndSortingRepository
+
+JpaRepository interface extends the PagingAndSortingRepository interface so if your repository interface is of type JpaRepository, you don’t have to make a change to it.
+
+For example the PostRepository interface extends JpaRepository:
+package com.springboot.blog.repository;
+
+import com.springboot.blog.entity.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PostRepository extends JpaRepository<Post, Long> {
+
+}
+
+
+--------------------------------------------------------------------------
+
+Example for pagination and sorting - use the following code snippet to get the first page from the database, with 10 items per page and sort by title in ASC order:
+
+
+long pageNo = 1;
+pageSize = 10;
+String sortBy = "title";
+String sortDir = "ASC";
+
+Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+		: Sort.by(sortBy).descending();
+
+// create Pageable instance
+Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+Page<Post> posts = postRepository.findAll(pageable);
+
+// get content for page object
+List<Post> listOfPosts = posts.getContent();
+

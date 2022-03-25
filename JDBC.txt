@@ -1,0 +1,161 @@
+public class Employee {
+    private int id;
+    private String name;
+    private double salary;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+}
+
+
+
+--------------------------------------------------------------------------
+
+
+import java.sql.*;
+import java.util.*;
+
+public class JDBCTest {
+    private static void getEmployees(){
+        List<Employee> employees = new ArrayList<>();
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RestDB","root","admin");
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("Select * from Employee");
+            connection.commit();
+            while (rs.next()){
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("ID"));
+                employee.setName(rs.getString("Name"));
+                employee.setSalary(rs.getDouble("Salary"));
+
+                employees.add(employee);
+            }
+            for(Employee employee : employees){
+                System.out.println(employee);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void getEmployee(int id){
+        Employee employee = new Employee();
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RESTDB", "root", "admin");
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("Select * from Employee where ID = ?");
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            connection.commit();
+            while (resultSet.next()){
+                employee.setId(resultSet.getInt("ID"));
+                employee.setName(resultSet.getString("Name"));
+                employee.setSalary(resultSet.getDouble("Salary"));
+            }
+            System.out.println(employee);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void createEmployee(Employee employee){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RESTDB", "root", "admin");
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO EMPLOYEE VALUES(?,?,?)");
+            preparedStatement.setInt(1, employee.getId());
+            preparedStatement.setString(2, employee.getName());
+            preparedStatement.setDouble(3, employee.getSalary());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            connection.commit();
+            System.out.println(rowsAffected + " row(s) affected!");
+            System.out.println(employee + " successfully added!");
+        }
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static void updateEmployee(Employee employee){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RESTDB", "root", "admin");
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE EMPLOYEE SET NAME = ?, SALARY = ? WHERE ID = ?");
+            preparedStatement.setString(1, employee.getName());
+            preparedStatement.setDouble(2, employee.getSalary());
+            preparedStatement.setInt(3, employee.getId());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            connection.commit();
+            System.out.println(rowsAffected + " row(s) updated!");
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void deleteEmployee(int id){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RESTDB", "root", "admin");
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM EMPLOYEE WHERE ID = ?");
+            preparedStatement.setInt(1, id);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            connection.commit();
+            System.out.println(rowsAffected + " row(s) deleted!");
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void main(String... args){
+        Employee employee = new Employee();
+        employee.setId(4);
+        employee.setName("KULDEEP");
+        employee.setSalary(3100000);
+
+        createEmployee(employee);
+    }
+}

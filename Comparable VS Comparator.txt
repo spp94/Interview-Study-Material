@@ -1,0 +1,130 @@
+COMPARABLE
+-----------
+If we want to sort the list, the item should be of type Comparable. example: Integer, String, Character etc..
+
+import java.util.*;
+
+class Laptop implements Comparable<Laptop>{
+
+    @Override
+    public int compareTo(Laptop l){
+        return this.getPrice() - l.getPrice();
+    }
+    private String brand;
+    private int ram;
+    private int price;
+
+    public Laptop(String brand, int ram, int price){
+        this.brand = brand;
+        this.ram = ram;
+        this.price  = price;
+    }
+
+    public void setBrand(String brand){
+        this.brand = brand;
+    }
+    public void setRam(int ram){
+        this.ram = ram;
+    }
+    public void setPrice(int price){
+        this.price = price;
+    }
+
+    public String getBrand(){
+        return this.brand;
+    }
+    public int getRam(){
+        return this.ram;
+    }
+    public int getPrice(){
+        return this.price;
+    }
+
+    @Override
+    public String toString(){
+        return "Laptop Brand = " + brand + " Ram = " + ram + " Price = " + price;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        List<Laptop> laptops = new ArrayList<>();
+        laptops.add(new Laptop("Dell", 8, 1200));
+        laptops.add(new Laptop("HP", 12, 1300));
+        laptops.add(new Laptop("Lenovo", 16, 2400));
+        laptops.add(new Laptop("Intel", 8, 900));
+
+        Collections.sort(laptops);
+        for(Laptop laptop : laptops){
+            System.out.println(laptop);
+        }
+    }
+}
+
+
+
+Both Comparable and Comparator are Interfaces. Comparator is a Functional Interface.
+Comparable is part of java.lang package whereas Comparator is a part of java.util package
+
+Comparator
+-----------
+We use Comparator when we don't have the access to the Class. Comparator
+
+import java.util.*;
+
+class Laptop{
+    private String brand;
+    private int ram;
+    private int price;
+
+    public Laptop(String brand, int ram, int price){
+        this.brand = brand;
+        this.ram = ram;
+        this.price  = price;
+    }
+
+    public void setBrand(String brand){
+        this.brand = brand;
+    }
+    public void setRam(int ram){
+        this.ram = ram;
+    }
+    public void setPrice(int price){
+        this.price = price;
+    }
+
+    public String getBrand(){
+        return this.brand;
+    }
+    public int getRam(){
+        return this.ram;
+    }
+    public int getPrice(){
+        return this.price;
+    }
+
+    @Override
+    public String toString(){
+        return "Laptop Brand = " + brand + " Ram = " + ram + " Price = " + price;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        List<Laptop> laptops = new ArrayList<>();
+        laptops.add(new Laptop("Dell", 8, 1200));
+        laptops.add(new Laptop("HP", 12, 1300));
+        laptops.add(new Laptop("Lenovo", 16, 2400));
+        laptops.add(new Laptop("Intel", 8, 900));
+
+        Collections.sort(laptops, (l1, l2) ->{
+                return l1.getPrice() - l2.getPrice();
+            }
+        );
+        for(Laptop laptop : laptops){
+            System.out.println(laptop);
+        }
+    }
+}
+
+

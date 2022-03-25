@@ -1,0 +1,120 @@
+import com.sun.org.apache.xpath.internal.objects.XNumber;
+
+import java.util.Arrays;
+
+public class Sorting {
+    // O(N2)
+    public void bubbleSort(int[] numbers){
+        boolean isSorted = true;
+        for(int i = 0; i < numbers.length; i++){
+            for(int j = 0; j < numbers.length - i - 1; j++){
+                if(numbers[j] > numbers[j+1]){
+                    swap(numbers, j, j+1);
+                    isSorted = false;
+                }
+            }
+            if(isSorted)
+                return;
+        }
+    }
+
+    // O(N2)
+    public void selectionSort(int[] numbers){
+        for(int i = 0; i < numbers.length; i++){
+            int min = numbers[i];
+            int minIndex = i;
+            for(int j = i+1; j < numbers.length; j++){
+                if(numbers[j] < min){
+                    min = numbers[j];
+                    minIndex = j;
+                }
+            }
+            swap(numbers, i, minIndex);
+        }
+    }
+
+    // O(N2)
+    public void insertionSort(int[] numbers){
+        for(int i = 1; i < numbers.length; i++){
+            int current = numbers[i];
+            int j = i-1;
+
+            while (j >= 0 && numbers[j] > current){
+                numbers[j+1] = numbers[j];
+                j--;
+            }
+
+            numbers[j+1] = current;
+        }
+    }
+
+    // O(N LOG(N))
+    public void mergeSort(int[] numbers){
+        // Base condition
+        if(numbers.length == 1 || numbers.length == 0)
+            return;
+        // Divide the array into two half
+        int middle = numbers.length / 2;
+        int[] left = new int[middle];
+        left = Arrays.copyOfRange(numbers, 0, middle);
+        int[] right = new int[numbers.length - middle];
+        right = Arrays.copyOfRange(numbers, middle, numbers.length);
+        // Sort the two half
+        mergeSort(left);
+        mergeSort(right);
+        // Merge the two half
+        mergeArrays(left, right, numbers);
+    }
+
+    private void mergeArrays(int[] left, int[] right, int[] numbers){
+        int leftIndex = 0, rightIndex = 0, index = 0;
+        while(leftIndex < left.length && rightIndex < right.length){
+            if(left[leftIndex] < right[rightIndex]){
+                numbers[index++] = left[leftIndex++];
+            }
+            else{
+                numbers[index++] = right[rightIndex++];
+            }
+        }
+        while (leftIndex < left.length){
+            numbers[index++] = left[leftIndex++];
+        }
+        while(rightIndex < right.length){
+            numbers[index++] = right[rightIndex++];
+        }
+    }
+
+    public void quickSort(int[] numbers){
+        quickSorting(numbers, 0, numbers.length - 1);
+    }
+
+    // O(NLog(N))
+    private void quickSorting(int[] numbers, int start, int end){
+        if(start >= end)
+            return;
+        // Do the partition
+        int partition = getPartitionBoundary(numbers, start, end);
+
+        // Sort the two parts
+        quickSorting(numbers, 0, partition - 1);
+        quickSorting(numbers, partition + 1, end);
+    }
+
+    public int getPartitionBoundary(int[] numbers, int start, int end){
+        int pivot = numbers[end];
+        int boundary = start - 1;
+        for(int i = start; i <= end; i++){
+            if(numbers[i] <= pivot){
+                swap(numbers, i, ++boundary);
+            }
+        }
+
+        return boundary;
+    }
+
+    private void swap(int[] numbers, int i, int j){
+        int temp = numbers[i];
+        numbers[i] = numbers[j];
+        numbers[j] = temp;
+    }
+}

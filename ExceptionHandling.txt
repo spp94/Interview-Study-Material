@@ -1,0 +1,238 @@
+Exception Handling
+-------------------
+
+An exception is an event that disrupts the normal flow of the program. Exception Handling is a process of handling such exception like: ClassNotFound, IO, NullPointer, ArrayIndexOutOfBound etc.
+
+Problem Occurs ---> Create an Exception --->  Throw an Exception ---> Handle the Exception
+
+Error
+------
+
+1. Impossible to recover from the Error.
+2. Errors are of Unchecked Type.
+3. Happen at RunTime.
+4. Caused by the environment at which the Application is running.
+
+
+Exception
+----------
+
+1. Possible to recover from the Exception.
+2. Can be checked or unchecked.
+3. Can occur on compile or runtime.
+4. Occurs due to the application.
+
+
+
+                    Object
+					   |
+					   |   
+				   Throwable	   
+					   |
+					   |
+           --------------------------
+		   |                         |
+		Exception                  Error
+           |                       StackOverFlow 
+    -------------------		       OutOfMemeory
+	|                  |
+Checked             Unchecked
+
+
+
+Checked Exception
+------------------
+1. The exception that is checked by the compiler at the compile time.
+2. These exceptions can not be ignored and the programmer should handle it.
+Example: ClassNotFound, FileNotFound etc..
+
+Unchecked Exception
+--------------------
+1. These exception occur during the runtime and the Developer can't do much about it.
+It's a good practice to handle it.
+Example: ArrayIndexOutOfBound, NullPointer etc..
+
+
+Basic example format of Exception
+-----------------------------------
+
+public class Test {
+    public static void main(String[] args) {
+        try{
+            // code that can throw the exception
+        }catch (Exception e){
+            // Handle those exceptions
+        }
+    }
+}
+
+
+
+Types of Exception
+--------------------
+1. Built in exception.
+2. User Defined Exception
+
+Examples of Build in exception:
+1. ArrayIndexOutOfBounds
+2. ClassNotFound
+3. StringIndexOutofBound
+4. FileNotFound
+5. IllegalStateException
+6. IllegalArgumentException
+7. Arithmetic
+8. NumberFormatException
+
+
+Exception Handling Methods
+---------------------------
+Try, Catch, Finally, Throw, Throws
+
+Try: Used to specify a block where we should places Exception code.
+Syntax: 
+
+try{
+// code that throws Exception
+}
+catch(Exception e){
+}
+
+
+Catch: Is used to handle the Exception
+Syntax:
+
+try{
+// protected code
+} 
+catch(Exception1)
+{
+}
+catch(Exception2)
+{
+}
+catch(Exception3)
+{
+}
+
+
+Finally
+-------
+This block will always be executed no matter what. Basically used for cleaning and closing the objects.
+
+
+try{
+// protected code
+} 
+catch(Exception1)
+{
+// Exception1
+}
+catch(Exception2)
+{
+// Exception2
+}
+catch(Exception3)
+{
+// Exception3
+}
+finally {
+// This block will always be executed
+}
+
+
+
+Throw
+------
+Is a keyword to throw an exception.
+throw new Exception();
+
+
+Throws
+-------
+It tells the calling method that please handle the exception.
+
+
+public class Test {
+    public static void doDivide()throws ArithmeticException{
+        int c = 10/0;
+    }
+    public static void main(String[] args) {
+     try{
+         doDivide();
+     }
+     catch (ArithmeticException arithmeticException){
+         System.out.println("Exception Handled");
+     }
+    }
+}
+
+
+
+Throw VS Throws
+----------------
+
+Throw
+------
+1. Used to explicitly throw an exception.
+2. Checked exception cannot be propagated using throw
+3. Used within a method and cannot throw multiple exception.
+
+Throws
+-------
+1. Used to declare an Exception.
+2. Used by method signature and can declare multiple Exceptions.
+
+
+
+Final 
+------
+1. Keyword
+2. Applied a restriction on variables, methods and class.
+3. Final class cannot be inherited, final method cannot be overriden and final variable value cannot be changed.
+
+
+Finally
+--------
+1. Block
+2. Used to place the important code in here. 
+3. Will always be executed whether the exception is handled or not.
+
+
+Finalize
+----------
+1. Method
+2. The method is called just before the GarbageCollection by the JVM so as to clean up the unwanted and unused objects.
+
+
+
+Custom Defined Exception
+--------------------------
+
+import java.util.Scanner;
+
+class NotEligibleToVoteException extends RuntimeException {
+    NotEligibleToVoteException(String message){
+        super(message);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while(true){
+            int n = sc.nextInt();
+            try {
+                if (n < 18) {
+                    throw new NotEligibleToVoteException("Not eligible to vote");
+                }
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+
+
+    }
+}
+
+

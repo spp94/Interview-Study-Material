@@ -1,0 +1,327 @@
+How to make class Immutable?
+---------------------------------
+
+import java.util.HashMap;
+
+final class Student{
+    private final int rollNumber;
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    // For anything other than the wrapper data type, we'll do the deep copy
+    public HashMap<String, Integer> getMarks() {
+        HashMap<String, Integer> tempMap = new HashMap<>();
+        for(String key : this.marks.keySet()){
+            tempMap.put(key, marks.get(key));
+        }
+        return tempMap;
+    }
+
+    private final String name;
+    private final HashMap<String, Integer> marks;
+
+    public Student(int rollNumber, String name, HashMap<String, Integer> marks){
+        this.rollNumber = rollNumber;
+        this.name = name;
+        // We will not assign the custom objects as it is rather we'll do the deep copy and assign
+        HashMap<String, Integer> tempMap = new HashMap<>();
+        for (String key : marks.keySet()){
+            tempMap.put(key, marks.get(key));
+        }
+        this.marks = tempMap;
+    }
+}
+
+
+public class Test{
+    public static void main(String[] args) {
+        HashMap<String, Integer> marks = new HashMap<>();
+        marks.put("English", 86);
+        marks.put("Maths", 94);
+        marks.put("Computer", 97);
+        marks.put("Hindi", 92);
+        Student student = new Student(1, "Shubham", marks);
+        marks.put("Physics", 90);
+        String s = "";
+    }
+}
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+How to create a Java HashMap of user defined class type?
+---------------------------------------------------------
+
+We need to properly override the equals() and hashcode() methods for it to work correctly.
+
+
+import java.util.HashMap;
+
+class Student {
+    private int rollNumber;
+    private String name;
+
+    public Student(int rollNumber, String name) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(int rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode(){
+        return this.rollNumber;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == this || (o == null && this == null)){
+            return false;
+        }
+        Student student = (Student)o;
+        return this.rollNumber == student.rollNumber;
+    }
+}
+
+public class Test{
+    public static void main(String[] args) {
+        Student student1 = new Student(1, "Shubham");
+        Student student2 = new Student(2, "Satyam");
+        Student student3 = new Student(3, "Archana");
+        Student student4 = new Student(4, "Sachin");
+
+        HashMap<Student, Integer> map = new HashMap<>();
+        map.put(student1,100);
+        map.put(student2,100);
+        map.put(student3,100);
+        map.put(student4,100);
+
+        student1.setName("Shubham Prakash");
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+You are using a class from a library (say Student). You have a list of Student objects. You need to sort this list based on first name. How will you do it? Constraint: 
+(You do not have the ability to change the source code of the Student class)
+
+Using Comparator(Functional Interface)
+
+import java.util.*;
+class Student{
+    private int rollNumber;
+    private String name;
+    private int marks;
+
+    public Student(int rollNumber, String name, int marks) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+        this.marks = marks;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "rollNumber=" + rollNumber +
+                ", name='" + name + '\'' +
+                ", marks=" + marks +
+                '}';
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(int rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMarks() {
+        return marks;
+    }
+
+    public void setMarks(int marks) {
+        this.marks = marks;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        List<Student> list = new ArrayList<>();
+        list.add(new Student(1, "Shubham", 100));
+        list.add(new Student(2, "Sachin", 97));
+        list.add(new Student(3, "Vivek", 120));
+        list.add(new Student(4, "Satyam", 65));
+        
+        Collections.sort(list, (s1, s2) -> { return s1.getMarks() - s2.getMarks(); });
+        String s = "";
+    }
+}
+
+
+----------------------------------------------------------------------------------------------------------------
+
+Consider a class A with a synchronized method class A { public void synchronized m1() {Thread.sleep(5000);} } We create two objects of this class - o1 and o2. 
+We call o1.m1() on one thread and o2.m1() on another thread, at the same time. What will be the behaviour? Follow up with - how will you force these calls to
+execute one after the other
+
+We can use join() or wait()
+
+
+----------------------------------------------------------------------------------------------------------------
+
+We have a Parent class with 2 methods walk and run. We have a child class which overrides both the methods. Both child class methods just call their respective
+Super implementation. Parent class run method calls walk(). class Parent Parent p = new Child(); p.run(); Tell the order in which each method is called
+
+
+class Parent {
+    public void walk(){
+        System.out.println("Parent Walking");
+    }
+    public void run(){
+        System.out.println("Parent Running");
+        walk();
+    }
+}
+
+class Child extends Parent {
+    public void walk(){
+        super.walk();
+    }
+    public void run(){
+        super.run();
+    }
+}
+
+public class Test{
+    public static void main(String[] args) {
+        Parent p = new Child(); 
+        p.run();
+    }
+}
+
+// Parent Constructor -> Child Constructor -> Child run -> Parent run 
+
+------------------------------------------------------------------------------------------------------
+
+Given a List of integers (List<Integer>), write code in Java 8 style to get the sum of the squares of all the odd numbers in the array.
+
+
+import java.util.*;
+
+public class Test{
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
+
+        int sum = list.stream().filter(i -> i % 2 == 1).mapToInt(i -> i*i).sum();
+        System.out.println(sum);
+    }
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+What is the difference between HashMap and ConcurrentHashMap? Follow up with - what is the difference between CHM and synchronized Map
+
+HashMap is not thread safe, whereas ConcurrentHashMap and synchronized Map are thread safe. 
+ConcurrentHashMap puts a lock at the index or segment level whereas synchronized Map puts a lock at Object level.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Explain what the following command does on Unix: chmod 764 file1
+
+
+User / owner can read, can write and can execute. (G)roup can read, can write and can't execute. (O)thers can read, can't write and can't execute.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+We have a table called BookAuthor. It has two columns Book and Author, Book being unique column. Write a query to find the names of the authors who have written more than 10 books.
+
+         BookAuthor
+
+Book                   Author
+1                        A
+2                        B
+3                        A
+4                        B
+5                        B
+
+SELECT AUTHOR FROM BOOKAUTHOR GROUP BY AUTHOR HAVING COUNT(AUTHOR) > 10
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lets suppose you have a classA with overloaded method 'display' with String, Integer and Object argument respectively. 
+From my main method, we are calling display(null) on this class A object. What would be the output?
+
+
+
+import java.io.ObjectOutputStream;
+
+class A {
+    public void call(String s){
+        System.out.println("Call with String Input");
+    }
+    public void call(Integer s){
+        System.out.println("Call with Integer Input");
+    }
+    public void call(Object s){
+        System.out.println("Call with Object Input");
+    }
+}
+
+public class Test{
+    public static void main(String[] args) {
+        A a = new A();
+        a.call(null);
+    }
+}
+
+
+
+
+Ambiguous method call. Both
+call
+(String)
+in A and
+call
+(Integer)
+in A match
+

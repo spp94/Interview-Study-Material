@@ -1,0 +1,59 @@
+@FunctionalInterface
+interface Cab {
+    public abstract void bookCab(String src, String dest);
+}
+
+
+class Ola implements Cab {
+    @Override
+    public void bookCab(String src, String dest){
+        System.out.println("Ola booked from " + src + " to destination " + dest);
+    }
+}
+
+public class Test{
+    public static void main(String[] args) {
+        Ola ola = new Ola();
+        ola.bookCab("Banaglore", "Lucknow");
+    }
+}
+
+
+----------------------------------------------------------------------------------------------------------------
+
+// The only use of this Ola class it to implement the interface Cab, we can avoid it using Anonymous class
+
+@FunctionalInterface
+interface Cab {
+    public abstract void bookCab(String src, String dest);
+}
+
+public class Test{
+    public static void main(String[] args) {
+        // Anonymous class
+        Cab cab = new Cab(){
+            @Override
+            public void bookCab(String src, String dest){
+                System.out.println("Cab booked from " + src + " to destination " + dest);
+            }
+        };
+    }
+}
+
+
+------------------------------------------------------------------------------------------------------------------
+@FunctionalInterface
+interface Cab {
+    public abstract void bookCab(String src, String dest);
+}
+
+public class Test{
+    public static void main(String[] args) {
+        // We can use Lambda expression 
+        Cab cab = (src, dest) -> {
+                System.out.println("Cab booked from " + src + " to destination " + dest);
+        };
+    }
+}
+
+

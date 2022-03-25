@@ -1,0 +1,51 @@
+A complete binary tree has every level except possibly the last, completely filled, with all nodes as far left as possible.
+
+             7
+          /     \
+         10      15
+       /   \    /  \
+      17   20  30   35
+     / \   /
+    40 41 50
+Input: Node = 3
+Output: No
+
+Input: Node = 7
+Output: Yes
+
+Input: Node = 30
+Output: Yes
+
+
+To find the level where element exists(if) : O(Height)
+Print all the elements at a level: if element exists 
+
+
+Node Node {
+private int value;
+private Node left;
+private Node right;
+}
+
+int data
+private boolean 
+
+
+Node current = root;
+int level = 1;
+while(current.right != null)
+{
+ if(current.value > data)
+ {
+    return;
+ }
+ level++:
+ current = current.right;
+}
+
+
+
+
+
+
+

@@ -1,0 +1,487 @@
+Two ways of creating a Thread:
+1. Using Thread class
+2. Using Runnable Interface
+
+part of java.lang package
+
+public class Thread {
+// many constructors
+// many methods like start() run()
+}
+
+
+Runnable is a functional interface
+
+part of java.lang package
+
+public interface Runnable{
+   public void run();
+}
+
+
+
+
+// 1. Extend the Thread class
+class Test extends Thread{
+    // 2. Override the run() method
+    @Override
+    public void run(){
+        System.out.println("Tasks of a thread");
+    }
+    public static void main(String[] args) {
+        // 3. Create an instance of Test
+        Test test = new Test();
+        // 4. Invoke and create the thread
+        test.start(); // It calls Thread.start(), which internally calls the run() method
+        // Throws an exception, the thread will be in dead state and hence cannot be invoked again.
+		// IllegalThreadStateException
+        test.start();
+    }
+}
+
+
+// 1. Implement the Runnable interface
+class Test1 implements Runnable{
+    // 2. Override the run method
+    @Override
+    public void run(){
+        System.out.println("Tasks of a thread");
+    }
+
+    public static void main(String[] args) {
+        // 3. Create an instance of Test class
+        Test1 test1 = new Test1();
+        // 4. Create an instance of Thread class
+        Thread thread = new Thread(test1);
+        // 5. Invoke and create the thread
+        thread.start();
+    }
+}
+
+
+// Since we can implement many interfaces and extend only one class, hence creating a Thread using Runnable interface is better.
+
+
+
+
+
+class MultipleThread extends Thread {
+    private int threadNumber;
+
+    public MultipleThread(int threadNumber){
+        this.threadNumber = threadNumber;
+    }
+    @Override
+    public  void run(){
+        for(int i = 1; i <= 5; i++){
+            System.out.println(i + " from Thread " + threadNumber);
+            try {
+                Thread.sleep(1000);
+            } catch(Exception e){
+                // do nothing
+            }
+        }
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        MultipleThread multipleThread1 = new MultipleThread(1);
+        MultipleThread multipleThread2 = new MultipleThread(2);
+        MultipleThread multipleThread3 = new MultipleThread(3);
+        multipleThread1.setPriority(3);
+        multipleThread1.start();
+        try {
+            multipleThread1.join();
+        }catch (Exception e){
+
+        }
+        multipleThread2.setPriority(1);
+        multipleThread2.start();
+
+        multipleThread3.setPriority(2);
+        multipleThread3.start();
+    }
+}
+
+
+
+
+Word is a process which has small sub process called as Threads.
+Thread is a unit of a process.
+Threads are light weight whereas Processes are heavy weight.
+
+Use of Thread
+---------------
+1. Using complete power of CPU
+2. Gaming: multi players playing at same time
+
+
+OS has multiple process running like VS, Intellij, Chrome etc. This is multiprocessing.
+A process like(word) has auto correct, auto save threads running in parallel. This is multithreading.
+Listening to song, writing code at same time is example of multitasking.
+
+
+
+By default we have a main thread.
+
+------------------------------------------------------------------
+
+class Thread1 implements Runnable{
+    @Override
+    public void run(){
+        for(int i = 1; i <= 5; i++) {
+            System.out.println("Thread1");
+            try { Thread.sleep(1000); } catch (Exception e) {}
+        }
+    }
+}
+
+class Thread2 implements Runnable{
+    @Override
+    public void run(){
+        for(int i = 1; i <= 5; i++) {
+            System.out.println("Thread2");
+            try { Thread.sleep(1000); } catch (Exception e) {}
+        }
+    }
+}
+
+
+public class Test {
+    public static void main(String[] args) {
+        Thread1 thread1 = new Thread1();
+        Thread2 thread2 = new Thread2();
+        Thread t1 = new Thread(thread1);
+        Thread t2 = new Thread(thread2);
+        t1.start();
+        t2.start();
+    }
+}
+
+
+-------------------------------------------------------------------
+
+Using Anonymous class
+
+
+public class Test {
+    public static void main(String[] args) {
+        Runnable thread1 = new Runnable() {
+            @Override
+            public void run(){
+                for(int i = 1; i <= 5; i++) {
+                    System.out.println("Thread1");
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
+            }
+        };
+        Runnable thread2 = new Runnable() {
+            @Override
+            public void run(){
+                for(int i = 1; i <= 5; i++) {
+                    System.out.println("Thread2");
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
+            }
+        };
+        Thread t1 = new Thread(thread1);
+        Thread t2 = new Thread(thread2);
+        t1.start();
+        t2.start();
+    }
+}
+
+
+
+
+-----------------------------------------------------------------------
+
+Using Lambda function
+
+
+public class Test {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(() -> 
+            {
+                for(int i = 1; i <= 5; i++) {
+                    System.out.println("Thread1");
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
+            }
+        );
+        Thread t2 = new Thread(() -> {
+                for(int i = 1; i <= 5; i++) {
+                    System.out.println("Thread2");
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
+            }
+        );
+        t1.start();
+        t2.start();
+    }
+}
+
+
+---------------------------------------------------------------------------
+Using join() and isAlive()
+
+public class Test {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(() ->
+            {
+                for(int i = 1; i <= 5; i++) {
+                    System.out.println("Thread1");
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
+            }
+        );
+        Thread t2 = new Thread(() -> {
+                for(int i = 1; i <= 5; i++) {
+                    System.out.println("Thread2");
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
+            }
+        );
+        t1.start();
+        t2.start();
+
+        System.out.println(t1.isAlive());
+        System.out.println(t2.isAlive());
+        try {
+            t1.join();
+            t2.join();
+        } catch (Exception e) {}
+        System.out.println(t1.isAlive());
+        System.out.println(t2.isAlive());
+        System.out.println("Bye");
+    }
+}
+
+
+join(): will wait till the thread is completed
+isAlive: will check if the thread is alive(active) or not
+
+
+t1.setName("Test1");
+t1.setPriority(Priority.MIN_VALUE)
+t1.setPriority(Priority.MAX_VALUE)
+
+
+
+class Counter {
+    int count = 1;
+    public synchronized void counting(){
+        count++;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Counter c = new Counter();
+        Thread thread1 = new Thread(() -> {
+            for(int i = 1; i <= 2000; i++){
+                c.counting();
+            }
+        });
+        Thread thread2 = new Thread(() -> {
+            for(int i = 1; i <= 2000; i++){
+                c.counting();
+            }
+        });
+        thread1.start();
+        thread2.start();
+        try{ thread1.join(); } catch(Exception e) {}
+        System.out.println(c.count);
+    }
+}
+
+
+Use of synchronized
+---------------------
+
+class Counter {
+    int count = 1;
+    public synchronized void counting(){
+        count++;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Counter c = new Counter();
+        Thread thread1 = new Thread(() -> {
+            for(int i = 1; i <= 2000; i++){
+                c.counting();
+            }
+        });
+        Thread thread2 = new Thread(() -> {
+            for(int i = 1; i <= 2000; i++){
+                c.counting();
+            }
+        });
+        thread1.start();
+        thread2.start();
+        try{ thread1.join(); } catch(Exception e) {}
+        System.out.println(c.count);
+    }
+}
+
+
+-------------------------------------------------------------------
+
+What is a Java Thread?
+
+1. Thread is a lightweight sub process.
+2. It is the smallest individual unit of a program.
+3. Every Java program contains at least one thread ie.. Main Thread.
+4. Thread is created and controlled by the java.lang.Thread class.
+
+
+Thread Lifecycle
+------------------
+
+A Java thread can lie in one of the shown states at any point of time. 
+
+New
+|
+|
+Runnable\
+|        \ Waiting
+|       /
+Running/
+|
+|
+Terminated
+
+
+New: A new Thread begins its life cycle in this state and remains here until the program starts the thread. It is also known as a born Thread.
+Runnable: Once a newly born thread starts, the thread comes under runnable state. A thread stays in this state until it is executing its task.
+Running: In this state a thread starts executing by entering the run() method and the yield method can send them to go back to the Runnable state.
+Waiting: A thread enters this state, when it is temporarily in an inactive state. ie. it is still in active state but not eligible to run. It can be in waiting, sleeping or blocked status.
+Terminated: A runnable thread enters the terminated state when it completes its task or otherwise terminates.
+
+
+Daemon thread is a low priority thread that runs in background to perform tasks such as garbage collection. JVM terminates itself when all user threads (non-daemon threads) finish their execution. 
+
+The thread class notify() method is used to wake up a single thread.
+notify(): will wake up one of the waiting thread wherease notifyAll() will wake up all the waiting threads.
+
+Producer Consumer Problem
+--------------------------
+
+class Company {
+    private int n;
+    private boolean isProductionTime = true;
+    public synchronized void produceItem(int n){
+        if(!isProductionTime){
+            try{ wait(); }catch (Exception e){ }
+        }
+        this.n = n;
+        System.out.println("Produced item " + this.n);
+        isProductionTime = false;
+        notify();
+    }
+    public synchronized void consumeItem(){
+        if(isProductionTime){
+            try{ wait(); }catch (Exception e){ }
+        }
+        System.out.println("Consumed item " + this.n);
+        isProductionTime = true;
+        notify();
+    }
+}
+
+class Producer extends Thread {
+    Company company;
+    Producer(Company company){
+        this.company = company;
+    }
+    @Override
+    public void run(){
+        for(int i = 1; i <= 10; i++){
+            this.company.produceItem(i);
+            try{Thread.sleep(1000);}catch (Exception e){}
+        }
+    }
+}
+
+class Consumer extends Thread {
+    Company company;
+    Consumer(Company company){
+        this.company = company;
+    }
+    @Override
+    public void run(){
+        for(int i = 1; i <= 10; i++){
+            this.company.consumeItem();
+            try{Thread.sleep(700);}catch (Exception e){}
+        }
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Company company = new Company();
+        Producer producer = new Producer(company);
+        Consumer consumer = new Consumer(company);
+        producer.start();
+        consumer.start();
+    }
+}
+
+
+
+Handling the lifecycle of Threads is very difficult, here is where Executor framework helps us.
+
+
+
+
+Print Even and Odd number using two threads
+--------------------------------------------
+
+public class Test {
+    int i = 1;
+    private static int N;
+    private void printOddNumber(){
+        synchronized (this) {
+            while (i < N) {
+                if (i % 2 == 0) {
+                    try {
+                        wait();
+                    } catch (Exception e) {
+                    }
+                }
+                System.out.println(i);
+                i++;
+                notify();
+            }
+        }
+    }
+
+    private void printEvenNumber(){
+        synchronized (this) {
+            while (i < N) {
+                if (i % 2 == 1) {
+                    try {
+                        wait();
+                    } catch (Exception e) {
+                    }
+                }
+                System.out.println(i);
+                i++;
+                notify();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        N = 20;
+        Test test = new Test();
+        Thread thread1 = new Thread(() -> test.printOddNumber());
+        Thread thread2 = new Thread(() -> test.printEvenNumber());
+
+        thread1.start();
+        thread2.start();
+    }
+}

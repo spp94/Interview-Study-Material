@@ -1,0 +1,133 @@
+Spring MVC
+-----------
+1. Easy to use
+2. Separation of concern or separation of modules
+3. It gives us the flexibility to change anything at any point of time
+
+In JSP-Servlet every servlet behaves as a Controller and every JSP as a View
+
+web.xml file contains the mappings, for which url which controller needs to be called
+In case of SpringMVC we just need to mention in web.xml that for all the request send it to DispatcherServlet
+When we have lots of controller it is not easy to maintain it using the web.xml file, that's why we need a front controller named as DispatcherServlet, which will take the request
+and forward it to the appropriate Controller.
+Every controller will have a mapping as well
+
+
+                                                               View Template  
+																	|
+																	| 
+																	|                                                                                
+																	| 
+																										Controllers
+															 (DispatcherServlet)	  ModelAndView										
+Client     ----- request ---->		web.xml     ------->      Front Controller 	   <----------------  	Login     @Controller
+																	|									Logout    @Controller
+																	|									Add       @Controller
+																	|									Multiply  @Controller
+																	|									
+													         dispatcher-servlet.xml	
+                                                           (it contains which package has 
+                                                           all the controllers)														   
+														   
+														   
+
+web.xml
+--------
+
+<servlet>
+		<servlet-name>telusko</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+</servlet>														
+
+<servlet-mapping>
+<servlet-name>telusko</servlet-name>
+<url-pattern>/</url-pattern>
+</servlet-mapping>
+
+
+
+telusko-servlet.xml
+--------------------
+
+<ctx:component-scan base-package="com.telusko"></ctx:component-scan>
+
+
+
+
+index.jsp
+----------
+
+<html>
+<body>
+<form action = "add">
+		<input type = "text" name = "t1"><br>
+		<input type = "text" name = "t2"><br>
+		<input type = "submit">
+</form>
+</body>
+</html>
+
+
+
+AddController.java
+-------------------
+
+@Controller
+public class AddController{
+	@RequestMapping("/add")
+	public ModelAndView add(HttpServletRequest request, HttpServletResponse response){
+	     int num1 = Integer.parseInt(request.getParameter("t1"));
+	     int num2 = Integer.parseInt(request.getParameter("t2"));
+	     ModelAndView mv = new ModelAndView();
+		 mv.setViewName("display.jsp");
+		 mv.addObject("result", (num1 + num2));
+    }
+}
+
+
+
+display.jsp
+------------
+
+<body>
+   Result is : <%= request.getAttribute("result") %>
+</body>
+
+
+
+
+We can run the code even without telusko-servlet.xml file, for that we can create a seperate Configuration class in java. We can do it using Annotation based configuration
+
+TeluskoConfig.java
+-------------------
+
+@EnableMVC
+@Configuration
+@ComponentScan({"com.telusko"})
+public class Telusko {
+
+}
+
+
+
+MyWebInitializer.java
+----------------------
+
+public class MyWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
+{
+@Override
+protected class<?>[] getRootConfigClasses(){
+return null;
+}
+
+@Override
+protected class<?>[] getServletConfigClasses(){
+return new Class[]{{TeluskoConfig.class};
+}
+
+@Override
+protected String[] getServletMappings(){
+return new String[]{"/"};
+}
+}
+

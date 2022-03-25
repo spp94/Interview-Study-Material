@@ -1,0 +1,346 @@
+Model
+
+Student.java
+-------------
+
+package com.sms.StudentManagementSystem.model;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "students")
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "email")
+    private String email;
+
+    public Student(){
+
+    }
+
+    public Student(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+
+
+Repository/DAO Layer
+---------------------
+
+Repository.java
+-----------------
+
+package com.sms.StudentManagementSystem.repostiory;
+
+import com.sms.StudentManagementSystem.model.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentRepository extends JpaRepository<Student, Long> {
+}
+
+
+
+Service Layer
+--------------
+
+IStudentService.java
+---------------------
+
+package com.sms.StudentManagementSystem.Service;
+
+import com.sms.StudentManagementSystem.model.Student;
+
+import java.util.List;
+
+public interface IStudentService {
+    List<Student> getStudents();
+    Student saveStudent(Student student);
+    Student getStudentById(long id);
+    Student updateStudent(Student student);
+    void deleteStudent(long id);
+}
+
+
+StudentService.java
+--------------------
+
+package com.sms.StudentManagementSystem.Service;
+
+import com.sms.StudentManagementSystem.model.Student;
+import com.sms.StudentManagementSystem.repostiory.StudentRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class StudentService implements IStudentService{
+    private StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository){
+        super();
+        this.studentRepository = studentRepository;
+    }
+
+    @Override
+    public List<Student> getStudents() {
+        return studentRepository.findAll();
+    }
+
+    @Override
+    public Student saveStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    @Override
+    public Student getStudentById(long id) {
+        return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("The student does not exists!"));
+    }
+
+    @Override
+    public Student updateStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    @Override
+    public void deleteStudent(long id) {
+        getStudentById(id);
+        studentRepository.deleteById(id);
+    }
+}
+
+
+Controller layer
+-----------------
+
+package com.sms.StudentManagementSystem.controller;
+
+import com.sms.StudentManagementSystem.Service.IStudentService;
+import com.sms.StudentManagementSystem.model.Student;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class StudentController {
+    private IStudentService iStudentService;
+
+    public StudentController(IStudentService iStudentService){
+        super();
+        this.iStudentService = iStudentService;
+    }
+
+    @GetMapping("/students")
+    public String listStudents(Model model){
+        model.addAttribute("students", iStudentService.getStudents());
+        return "students";
+    }
+
+    @GetMapping("/students/new")
+    public String createStudentForm(Model model){
+        model.addAttribute("student", new Student());
+        return "create_student";
+    }
+
+    @PostMapping("/students")
+    public String saveStudent(@ModelAttribute("student") Student student){
+        iStudentService.saveStudent(student);
+        return "redirect:/students";
+    }
+
+    @GetMapping("/students/edit/{id}")
+    public String editStudentForm(@PathVariable("id") long id, Model model){
+        model.addAttribute("student", iStudentService.getStudentById(id));
+        return "edit_student";
+    }
+
+    @PostMapping("students/{id}")
+    public String updateStudent(@PathVariable("id") long studentId, @ModelAttribute("student") Student student, Model model){
+        Student existingStudent = iStudentService.getStudentById(studentId);
+        existingStudent.setId(studentId);
+        existingStudent.setFirstName(student.getFirstName());
+        existingStudent.setLastName(student.getLastName());
+        existingStudent.setEmail(student.getEmail());
+        iStudentService.updateStudent(existingStudent);
+
+        return "redirect:/students";
+    }
+
+    @GetMapping("/students/{id}")
+    public String deleteStudent(@PathVariable("id") long id){
+        iStudentService.deleteStudent(id);
+        return "redirect:/students";
+    }
+
+}
+
+
+
+Views
+------
+
+student.html
+-------------
+
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <!-- Brand -->
+    <a class="navbar-brand" th:href="@{/students}">Student Management System</a>
+
+    <!-- Toggler/collapsibe Button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/students}">Student Management</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+<div class="row">
+    <h1>List Students</h1>
+</div>
+    <div class="row">
+        <div class="col-lg-3">
+            <a th:href = "@{/students/new}" class = "btn btn-primary btn-sm mb-3">Add Student</a>
+        </div>
+    </div>
+    <table class = "table table-striped table-bordered">
+        <thead class = "table-dark">
+        <tr>
+            <th>Student First Name</th>
+            <th>Student Last Name</th>
+            <th>Student Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each = "student : ${students}">
+            <td th:text = "${student.firstName}"></td>
+            <td th:text = "${student.lastName}"></td>
+            <td th:text = "${student.email}"></td>
+            <td>
+                <a th:href = "@{/students/edit/{id}(id = ${student.id})}" class="btn btn-primary">Update</a>
+                <a th:href = "@{/students/{id}(id = ${student.id})}" class="btn btn-danger" >Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
+
+
+
+edit_student.html
+---------------------
+
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <!-- Brand -->
+    <a class="navbar-brand" th:href="@{/students}">Student Management System</a>
+
+    <!-- Toggler/collapsibe Button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/students}">Student Management</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <h1 class="text-center">
+                Update Student
+            </h1>
+            <div class="card-body">
+                <form th:action="@{/students/{id}(id = ${student.id})}" th:object = "${student}" method="post">
+                    <input type="text" name="firstName" th:field="*{firstName}" class="form-control" placeholder="Enter Student First Name" />
+                    <input type="text" name="lastName" th:field="*{lastName}" class="form-control" placeholder="Enter Student Last Name" />
+                    <input type="text" name="email" th:field="*{email}" class="form-control" placeholder="Enter Student Email" />
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </table>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,525 @@
+What is Spring Boot?
+---------------------
+
+The main goal of Spring Boot is to quickly create production ready Spring-based applications without requiring developers
+to write the same boilerplate configuration again and again.
+
+Spring Boot is build on top of Spring
+
+  Spring Boot
+      ^
+      |
+	  |
+Spring Framework
+
+
+1. Dependency Injection
+2. Database Transaction Management
+3. Integration with other Java frameworks
+4. WEB MVC framework for building web applications as well as Restful services
+5. Auto configuration 
+6. Spring Boot starter(When we select a dependency it will load all the required configuration to work with that)
+7. Easy to use Embedded Tomcat server and we don't have to manually configure it.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Spring Boot Auto configuration
+-------------------------------
+
+Spring Boot auto configuration attempts to automatically configure your Spring based application based on your dependency
+
+Spring Boot applications have a lot of configuration.
+
+1. When we use Spring MVC, we need to configure 
+Component scan
+Dispatcher Servlet
+View Resolver
+Web jars(for delivering static content)
+
+2. When we use Hibernate/JPA
+DataSource
+EntityManagerFactory/SessionFactory
+Transaction manager among a host of other things
+
+3. When you use Cache
+Cache Confguration
+
+4. When you use Message Queue
+Message Queue Confguration
+
+5. When you use NoSQL database
+NoSQL database configuration
+
+
+
+Being a developer our main focus should be the business logic and not the configuration part. 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+Different ways to create a Spring Boot Application
+---------------------------------------------------
+
+1. Using Spring Initializer
+2. Using Spring Starter Project in Spring Tool Suite(STS) or Eclipse
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+package com.restapi.com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringbootBackendApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringbootBackendApplication.class);
+    }
+}
+
+
+SpringbootBackendApplication is the Start Class or SpringBoot entry point class.
+This class contains the main method and main method internally contains the run method. run method is a static method
+run method will load all the auto configuration classes 
+
+
+Spring Boot Application Execution process
+------------------------------------------
+
+1. Spring boot application execution will start from the main() method.
+2. The main() method internally calls the SpringApplication.run() method
+3. SpringApplication.run() method performs the bootstrapping for our spring boot application.
+4. Starts the StopWatch to identify the time taken to bootstrap the spring boot application.
+5. Prepares the environment to run our spring boot application.
+6. Print banner(Spring Boot logo) on console.
+7. Start the IOC container(Application Context) based on the classpath.
+8. Refresh Application Context reference(Spring IOC)
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Types of Spring Boot Applications
+----------------------------------
+1. spring-boot-starter : If we have spring-boot-starter dependency in classpath then the spring boot application comes under default category
+                         Used to create Utility, Desktop based Applications
+2. spring-boot-starter-web : If we have spring-boot-starter dependency in classpath then the spring boot application comes under servlet category
+                             Can be used to create Spring MVC web application and Spring MVC Rest API Applications
+3. spring-boot-starter-webflux : If we have spring-boot-starter dependency in classpath then the spring boot application comes under reactive category
+                                 Can be used to create Spring Boot Reactive Web Application
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+@SpringBootApplication annotation
+----------------------------------
+
+package com.restapi.com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringbootBackendApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringbootBackendApplication.class);
+    }
+}						 
+
+@SpringBootApplication should be used with the main class or spring boot entry class.
+
+        
+		                             @SpringBootApplication
+                                              |
+                                              |
+          -------------------------------------------------------------------------------										  
+       @SpringBootConfiguration           @EnableAutoConfiguration              @ComponentScan
+                   |
+				   |
+		      @Confguration
+			  
+@ComponentScan will scan all the classes within the same base package and sub package.
+
+com.resapti
+  com.restapi.sub1
+  com.restapi.sub2
+  SpringbootBackendApplication
+  
+  
+Here @ComponentScan will scan all the classes from com.resapti package and sub package(com.resapti.sub1 and com.resapti.sub2)
+
+@ComponentScan will scan the spring component class and register it in the Spring IOC.
+
+@Component
+public class SpringComponent{
+   public String getMessage() {
+      return "Hello World";
+   }
+}
+
+
+
+@SpringBootApplication
+public class SpringbootBackendApplication {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(SpringbootBackendApplication.class);
+		SpringComponent component = applicationContext.getBean(SpringComponent.class);
+		System.out.println(component.getMessage());
+    }
+}	
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Spring Boot Starters - Very Important Feature
+-----------------------------------------------
+
+If we are creating a Spring MVC + Hibernate/JPA application we need,
+1. Spring MVC dependency
+2. Hibernate/JPA dependency
+3. Other third party dependency
+
+Using Spring Boot all of these dependency can be done using a single spring-boot-starter-web dependency
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Spring Boot Starter Project
+----------------------------
+It provides default configuration for our Application.
+The default Java version is 1.8
+
+Spring Web dependency is used for creating web application and Rest API. It internally uses Spring MVC and Tomcat(as embedded server) 
+
+Keep all your application level configuration in the application.configuration file.
+
+In src/test folder we keep all our JUnit Tests
+
+
+@ResponseBody annotation uses HTTP Message converters to convert the return value(Java Object) into HTTP ResponseBody(JSON, XML etc)
+based on the content type in the request HTTP Header
+
+How is the Java object being converted into JSON?
+
+That's the beauty of Spring MVC which internally uses Jackson library to convert Java object into a JSON.
+
+To support XML for example we can do the following:
+
+@GetMapping(path = "/students", produces = MediaType.APPLICATION_XML_VALUE)
+ 
+
+This is path variable or path parameter
+http://localhost:8080/students/1 
+
+This is Query parameter
+http://localhost:8080/students?id=1
+
+
+@GetMapping("/students/query")
+public Student getStudent(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
+{
+return new Student(firstName, lastName);
+}
+
+
+
+@RequestParam(name = "firstName") or @RequestParam("firstName")
+@PathVariable(name = "firstName") or @PathVariable("firstName")
+
+
+
+The available embedded server in Spring Boot
+---------------------------------------------
+1. Tomcat(default)
+2. Jetty
+3. Undertow
+
+Now to add other embedded server,
+
+In POM.xml, exclude the dependency for Tomcat
+
+<exclusions>
+<exclusion>
+<groupid>org.springframework.boot</groupid>
+<artifactid>spring-boot-starter-tomcat</artifactid>
+</exclusion>
+</exclusions>
+
+
+To add dependency for Jetty,
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
+
+
+
+jar stands for java archive and war stands for website archive
+
+Spring Boot Dev Tools
+----------------------
+
+Well, the problem is in Spring Boot application Development:
+If you make changes in Spring Boot App
+Then you have to manually restart your application.
+
+Solution is Spring-boot-devtools dependency will detect the changes in the code and automatically restart the server.
+ 
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Thymeleaf Template Crash Course
+--------------------------------
+
+What is Thymeleaf?
+-------------------
+
+Thymeleaf is a modern server side Java template engine for both web and standalone environments, capable of processing HTML, XML, Javascript, CSS and even plain text.
+It's commonly used to generate HTML views for web applications
+
+
+What type of templates can Thymeleaf process?
+-----------------------------------------------
+
+HTML, XML, Javascript, CSS, Text, Raw
+
+
+What is a Thymeleaf template?
+-------------------------------
+
+Well it can be a HTML page with some Thymeleaf expressions.
+It can also include some Thymeleaf expressions(can access Java code, Object, Beans)
+
+MODEL
+------
+
+Person.java
+------------
+
+    public class Person{
+        private String firstName;
+        private String lastName;
+        
+        List<Person> personList;
+    }
+
+VIEW
+-----
+
+<body>
+<h1>Person List</h1>
+<a href = "addPerson">Add Person</a>
+<br/><br/>
+<div>
+<table border = "1">
+<tr>
+    <th>FirstName</th>
+    <th>LastName</th>
+</tr>
+<tr th:each = "person : ${persons}">
+    <td th:utext = "${person.firstName}">....</td>
+    <td th:utext = "${person.lastName}">....</td>
+</tr>
+</table>
+</div>
+</body>
+
+
+
+Where's a Thymeleaf template processed?
+----------------------------------------
+
+In Webapp Thymeleaf is processed on the server side.
+Results are included in the HTML and returned to the browser.
+
+
+
+HelloWorld Basic Thymeleaf Application
+---------------------------------------
+
+HelloWorldController
+---------------------
+
+package com.restapi.thymeleaf;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+
+@Controller
+public class HelloWorldController {
+	public String hello(Model model) {
+		model.addAttribute("firstName", "Shubham");
+		model.addAttribute("lastName", "Prakash");
+		
+		return "helloworld";
+	}
+}
+
+
+
+helloworld.html
+----------------
+
+<!DOCTYPE HTML>
+<html xmlns:th = "http://www.thymeleaf.org">
+<head>
+<title>Thymeleaf Hello World App</title>
+</head>
+
+<body>
+    <h1 th:text = "'Thymeleaf ' + ${firstName} + ' ' + ${lastName}"></h1>
+</body>
+</html>
+
+
+We add the JS and css files in 
+
+src/main/resources
+   static folder
+      js
+	  css
+	  
+
+To include it in the html
+
+<link th:href = "@{/css/main.css}" rel = "stylesheet">
+<script type = "text/javascript" th:src = "@{/js/actions.js}"></script>
+
+
+
+Looping or Iteration in Thymeleaf template
+-------------------------------------------
+
+1. th:each
+------------
+
+<tr th:each = "employee : ${employees}">
+<td th:text = "${firstName}"></td>
+<td th:text = "${lastName}"></td>
+<td th:text = "${email}"></td>
+</tr>
+
+
+2. Status variable
+-------------------
+
+Thymeleaf also enables a useful mechanism to keep a track of the iteration process via the status variable.
+The status variable provides the following properties:
+
+index: the current iteration index, starting with 0
+count: the number of elements processed so far
+size: the total number of elements in the list
+even/odd: checks if the current iteration index is even or odd
+first: checks if the current iteration is the first one
+last: checks if the current iteration is the last one
+
+
+3. Conditional statement in Thymeleaf template
+-----------------------------------------------
+If, unless and switch case attributes
+
+<td>
+    <a class = "btn btn-primary" th:if = "${user.role} == 'ADMIN'">Update</a>
+    <a class = "btn btn-danger" th:if = "${user.role} == 'ADMIN'">Delete</a>
+    <a class = "btn btn-primary" th:unless = "${user.role} == 'ADMIN'">View</a>
+</td>
+
+
+Switch case
+------------
+
+<div th:switch = "${user.role}">
+<p th:case = "'ADMIN'">User is an administrator</p>
+<p th:case = "'MANAGER'">User is a manager</p>
+<p th:case = "'GUEST'">User is a guest</p>
+<p th:case = "*">User is some other thing</p>
+</div>
+
+
+
+
+
+CommandLineRunner
+------------------
+
+CommandLineRunner is a simple Spring Boot interface with a run method. Spring Boot will automatically call the run method of all beans implementing this interface
+after the application context has been loaded.
+
+
+In Memory - Using H2
+---------------------
+
+Where is the database created?
+--------------------------------
+
+In Memory - Using H2 
+
+
+What schema is used to create the database?
+--------------------------------------------
+
+Created based on the entities defined
+
+Where are the tables created
+-----------------------------
+Created based on the entities defined
+In Memory - Using H2 
+
+
+Can I see the data in the database?
+------------------------------------
+
+http://localhost:8080/h2-console
+
+Use db url jdbc:h2:mem:testdb
+
+Where is Hibernate coming in from?
+-----------------------------------
+
+Through Spring Data JPA starter
+
+How is the datasource created?
+------------------------------
+
+Through SpringBoot Auto configuration
+
+------------------------------------------------------------------------------------
+
+How to disable a class from Auto configuration?
+
+@EnableAutoConfiguration(exclude = {className})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+import java.io.*;
+
+public class Test {
+    public static void main(String[] args) {
+        BufferedWriter bufferedWriter = null;
+        BufferedReader bufferedReader = null;
+        try{
+            String[] names = {"Shubham", "Archana", "Satyam"};
+            bufferedWriter = new BufferedWriter(new FileWriter("C:\\Users\\shubh\\Desktop\\testWriter.txt"));
+            for(String name : names){
+                bufferedWriter.write("Name = " + name + "\n");
+            }
+            bufferedWriter.close();
+
+            bufferedReader = new BufferedReader(new FileReader("C:\\Users\\shubh\\Desktop\\testWriter.txt"));
+            String line;
+            while ((line = bufferedReader.readLine()) != null){
+                System.out.println(line);
+            }
+            bufferedReader.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+}
