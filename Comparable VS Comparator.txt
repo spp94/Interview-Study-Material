@@ -121,6 +121,7 @@ public class Test {
                 return l1.getPrice() - l2.getPrice();
             }
         );
+        // Collections.sort(students, Comparator.comparingInt(Student :: getMarks));
         for(Laptop laptop : laptops){
             System.out.println(laptop);
         }
