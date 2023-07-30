@@ -1,0 +1,89 @@
+Now, let's say there are three actions to be performed, increment of 1500Rs, Tax deduction of 500Rs and PF deducation of 500Rs. 
+We have three different threads to do these actions
+
+Thread1 -------------------> Increment by 1500
+Thread2 -------------------> Tax deduction by 500
+Thread3 -------------------> PF deduction by 500
+
+class Employee {
+private String name;
+private double salary;
+}
+
+Employee employee = new Employee("Shubham", 10000);
+
+Thread1 goes to Core1,
+
+Processor                   Core1                                          Core2
+Processor Cache           salary: 10000 + 1000 = 11000
+
+
+    Employee { "Shubham", 11000}
+
+Thread2 now goes to Core2,
+
+Processor                   Core1                                          Core2
+Processor Cache           salary: 10000 + 1000 = 11000                 salary : 11000 - 500 = 10500
+
+           Employee {"Shubham", 10500}
+
+
+And Thread3 now goes to Core1,
+
+Processor                   Core1                                          Core2
+Processor Cache           salary: 11000 - 500 = 10500                salary : 11000 - 500 = 10500
+
+           Employee {"Shubham", 10500}
+
+Now since Core1 has cached the salary as 11000, and will deduct 500 from it, making it as 10500. It will update the employee Salary as 10500. 
+Which should rather have been 10000 + 10000 - 500 - 500 = 10000. Hence it's wrong.
+
+It's a problem now. To fix this issue we use a volatile keyword.
+
+class Employee {
+private String name;
+private volatile double salary;
+}
+
+Voltatile : When a variable is volatile, then processor will always fetch latest value from RAM and will not cache it's value in processor cache.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Syncronized
+-------------
+
+class Employee {
+private String name;
+private double salary;
+
+public void updateSalary(int amount)
+{
+    this.salary = this.salary + amount;
+}
+}
+
+Now if there are two thread which tries to call the updateSalary method of employee class, it will lead to wrong data updation.
+Hence to avoid this collision, we use a keyword syncronized. So that only one thread can access it at a time.
+
+When a method or a block of code is syncronized, then only one thread will be able to execute it. It will wait until the other thread has not 
+completed its operation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
