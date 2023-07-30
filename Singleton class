@@ -1,0 +1,67 @@
+Employee e1 = new Employee();
+Employee e2 = new Employee();
+Employee e3 = e1;
+
+
+        Stack Memory                                     Heap Memory
+            e1                                               E1
+            e2                                               E2
+            e3                                               refers to E1
+
+Now, here we can see that we are able to create multiple instances of an Employee class.
+So, Singleton class is a class with only one instance.
+
+
+Employee e1 = Employee.getInstance();
+Employee e2 = Employee.getInstance();
+Employee e3 = Employee.getInstance();
+
+
+        Stack Memory                                     Heap Memory
+            e1                                               E1
+            e2                                               E1
+            e3                                               E1
+
+
+How to create a Singleton class, two ways.
+
+Step1 : Using Eager Loading
+---------------------------------
+
+public class Employee {
+private static Employee obj = new Employee();
+private Employee() {}
+public static getInstance() {
+return obj;
+}
+}
+
+
+Step2 : Using Lazy Loading
+---------------------------------
+
+public class Employee {
+private static Employee obj;
+private Employee() {}
+public static getInstance() {
+if(obj == null) {
+   obj = new Employee();
+}
+return obj;
+}
+}
+
+But still it will create multiple instances of Singleton class here in case of multithreaded applications. 
+To avoid this we will use syncronized keyword.
+
+public class Employee {
+private static Employee obj;
+private Employee() {}
+public syncronized static getInstance() {
+if(obj == null) {
+   obj = new Employee();
+}
+return obj;
+}
+}
+
