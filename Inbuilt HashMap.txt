@@ -1,4 +1,4 @@
-In Java 8, when the size of linkedlist exceeds 8, it converts linked list into Balanced Tree.
+In Java 8, when the size of linkedlist exceeds TREEIFY_THRESHOLD = 8, it converts linked list into Balanced Tree.
 
 
 ---------------------------------------------------------------------------------------
