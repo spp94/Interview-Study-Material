@@ -1,0 +1,79 @@
+
+1. In Java, an Iterator is a interface that provides a way to traverse through a collection of objects, such as ArrayList or HashSet.
+2. ConcurrentModificationException is an exception that is thrown when a collection is modified while being iterated over. This can 
+happen when you try to add or remove elements from the collections while using an iterator.
+
+Fail Fast Iterators
+---------------------
+1. The fail-fast iterator immediately throws ConcurrentModificationException in case of structural modification of the collection.
+2. Structural modification means adding, removing or updating the value of an element in a collection while another thread is iterating over
+the collection.
+3. The fail-fast iterator uses the original collection to traverse through the collections element.
+4. Some examples of Fail-Fast iterator are iterator on ArrayList, Set, HashMap collection classes.
+
+Example
+-------
+
+        List<Integer> list = new CopyOnWriteArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        System.out.println("Before = " + list);
+
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+            list.add(6);
+        }
+
+        System.out.println("After = " + list);
+
+Output
+-------
+Before = [1, 2, 3, 4, 5]
+1
+2
+3
+4
+5
+After = [1, 2, 3, 4, 5, 6, 6, 6, 6, 6]
+
+
+Fail Safe Iterators
+--------------------
+1. This will not throw ConcurrentModificatiast, onException during the iteration.
+2. The fail-safe iterator uses a copy of the collection to traverse over the elements.
+3. Unlike Fail-Fast, Fail-Safe requires more memory as they work on the collection clone.
+4. The examples of fail-safe iterators are ConcurrentHashMap, CopyOnWriteArrayList etc. 
+
+Example :
+----------
+
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        System.out.println("Before = " + list);
+
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+            list.add(6);
+        }
+
+        System.out.println("After = " + list);
+
+
+Output
+-------
+
+Before = [1, 2, 3, 4, 5]
+1
+Exception in thread "main" java.util.ConcurrentModificationException
+	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:911)
+	at java.util.ArrayList$Itr.next(ArrayList.java:861)
+	at A.main(ABC.java:100)
