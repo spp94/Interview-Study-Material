@@ -1,0 +1,46 @@
+public class BankApplication {
+    private int balance;
+
+    public BankApplication(int balance) {
+        this.balance = balance;
+    }
+
+    public synchronized void deposit(int amount) {
+        int updatedWallet = this.balance + amount;
+        try { Thread.sleep(1000); } catch (Exception e) {}
+        balance = updatedWallet;
+        System.out.println("Updated balance = " + this.balance + " by thread = " + Thread.currentThread().getName());
+    }
+
+    public synchronized void withDraw(int amount) {
+        if(balance >= amount) {
+            int updatedWallet = this.balance - amount;
+            try { Thread.sleep(1000); } catch (Exception e) {}
+            balance = updatedWallet;
+            System.out.println("Updated balance = " + this.balance + " by thread = " + Thread.currentThread().getName());
+        } else {
+            System.out.println("Insufficient balance");
+        }
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+}
+
+class W {
+    public static void main(String[] args) {
+        BankApplication bankApplication = new BankApplication(1000);
+        Thread deposit1 = new Thread(() -> bankApplication.deposit(250), "Deposit1");
+        Thread deposit2 = new Thread(() -> bankApplication.deposit(450), "Deposit2");
+        Thread withdrawl1 = new Thread(() -> bankApplication.withDraw(150), "Withdrawl1");
+        Thread withdrawl2 = new Thread(() -> bankApplication.withDraw(350), "Withdrawl2");
+        deposit1.start();
+        deposit2.start();
+        withdrawl1.start();
+        withdrawl2.start();
+
+        try { deposit1.join(); deposit2.join(); withdrawl1.join(); withdrawl2.join();} catch (Exception e) {}
+        System.out.println("Updated balance = " + bankApplication.getBalance() + " by thread = " + Thread.currentThread().getName());
+    }
+}
