@@ -1,0 +1,358 @@
+SOLID PRINCIPLES
+-----------------
+All the developers should be following these principles in order to create a roubst, maintenable, 
+highly readable and flexible system.
+
+S : SINGLE RESPONSIBILITY PRINCIPLE
+------------------------------------
+"A CLASS SHOULD HAVE ONE AND ONLY ONE REASON TO BE CHANGED"
+
+Let's imagine a street food vendor, who does all the tasks on his own.
+
+public class StreetFoodVendor {
+    public void takeOrder() {
+        // do something
+    }
+    public void prepareMeal() {
+        // do something
+    }
+    public void serverOrder() {
+        // do something
+    }
+    public void takePayment() {
+        // do something
+    }
+}
+
+Here a single class is doing all the functionalities, which is not a good practice.
+
+We should be refactoring it as something, 
+
+class StreetFoodWaiter {
+    public void takeOrder() {
+        // do something
+    }
+    public void serverOrder() {
+        // do something
+    }
+}
+class StreetFoodChef {
+    public void prepareMeal() {
+        // do something
+    }
+}
+
+class StreetFoodManager {
+    public void takePayment() {
+        // do something
+    }
+}
+
+Now, all the classes have a single responsibility.
+
+
+
+
+O : OPEN/CLOSE PRINCIPLE 
+--------------------------
+"A CLASS SHOULD BE OPEN FOR EXTENSION AND CLOSED FOR MODIFICATION"
+
+Let's see an example, 
+
+class Square {
+    int length;
+    public Square(int length) {
+        this.length = length;
+    }
+}
+class Circle {
+    int radius;
+    public Circle(int radius) {
+        this.radius = radius;
+    }
+}
+
+public class AreaCalculator {
+    public static void main(String[] args) {
+        Object[] shapes = {new Circle(3), new Square(4)};
+        double ans = 0;
+        for(Object shape : shapes) {
+            if(shape instanceof Square) {
+                // Calculate area of square
+            }
+            else {
+                // Calculate area of Circle
+            }
+        }
+    }
+}
+
+Now in future if we have to add some extra shapes, we will have to do modifications in existing code. Which is a bad practice.
+
+We can fix this as follows,
+
+interface Shape {
+    double area();
+}
+
+class Square implements Shape{
+    int length;
+    public Square(int length) {
+        this.length = length;
+    }
+
+    @Override
+    public double area() {
+        return this.length * this.length;
+    }
+}
+class Circle implements Shape{
+    int radius;
+    public Circle(int radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double area() {
+        return this.radius * this.radius * 3.14;
+    }
+}
+
+public class AreaCalculator {
+    public static void main(String[] args) {
+        Shape[] shapes = {new Circle(3), new Square(4)};
+        double ans = 0;
+        for(Shape shape : shapes) {
+            ans += shape.area();
+        }
+        System.out.println(ans);
+    }
+}
+
+
+
+L : LISKOV SUBSTITUTION PRINCIPLE
+----------------------------------
+"A PARENT/SUB CLASS OBJECT SHOULD BE REPLACABLE BY ITS CHILD/BASE CLASS"
+
+class Rectangle {
+    private int length;
+    private int breadth;
+
+    public Rectangle(int length, int breadth) {
+        this.length = length;
+        this.breadth = breadth;
+    }
+    public double calculateArea() {
+        return this.length * this.breadth;
+    }
+    public void updateSize() {
+        // This will not hold true for Square
+        this.length = this.length * 3;
+        this.breadth = this.breadth * 2;
+    }
+}
+
+class Square extends Rectangle {
+    private int side;
+    public Square(int side) {
+        super(side, side);
+    }
+}
+class AreaCalculator {
+    public static void main(String[] args) {
+        Rectangle rectangle = new Rectangle(10, 20);
+        double area = rectangle.calculateArea();
+        System.out.println(area);
+        rectangle.updateSize();
+        area = rectangle.calculateArea();
+        System.out.println(area);
+
+        Rectangle square = new Square(10);
+        area = square.calculateArea();
+        System.out.println(area);
+        square.updateSize();
+        area = square.calculateArea();
+        System.out.println(area);
+    }
+}
+
+Here, Square is a Rectangle. But we cannot substitute Rectangle with a Square as the functionality is getting broken.
+
+
+I : INTERFACE SEGREGATION
+---------------------------
+
+"NO CLASS SHOULD BE FORCED TO IMPLEMENT A METHOD WHICH IS NOT OF ANY USE TO IT, WE SHOULD NOT BIG FATTY INTERFACES,
+RATHER WE SHOULD HAVE SMALL INTERFACES".
+
+interface SocialMedia {
+    void sendRequest();
+    void receiveRequest();
+    void chat();
+    void videoCall();
+}
+class Whatsapp implements SocialMedia {
+    @Override
+    public void sendRequest() {
+        // Do something
+    }
+
+    @Override
+    public void receiveRequest() {
+        // Do something
+    }
+
+    @Override
+    public void chat() {
+      // Do something
+    }
+
+    @Override
+    public void videoCall() {
+
+    }
+}
+class Twitter implements SocialMedia{
+
+    @Override
+    public void sendRequest() {
+        // Do something
+    }
+
+    @Override
+    public void receiveRequest() {
+        // Do something
+    }
+
+    @Override
+    public void chat() {
+        // Do something
+    }
+
+    @Override
+    public void videoCall() {
+        // Here we are forced to implement this video call feature
+//        throw new Exception("Twitter does not supports video call");
+    }
+}
+
+Solution
+---------
+
+interface SocialMedia {
+    void sendRequest();
+    void receiveRequest();
+    void chat();
+}
+interface MediaTypeSocialMedia {
+    void videoCall();
+}
+class Whatsapp implements SocialMedia, MediaTypeSocialMedia {
+    @Override
+    public void sendRequest() {
+        // Do something
+    }
+
+    @Override
+    public void receiveRequest() {
+        // Do something
+    }
+
+    @Override
+    public void chat() {
+      // Do something
+    }
+
+    @Override
+    public void videoCall() {
+        // Do Nothing
+    }
+}
+class Twitter implements SocialMedia{
+
+    @Override
+    public void sendRequest() {
+        // Do something
+    }
+
+    @Override
+    public void receiveRequest() {
+        // Do something
+    }
+
+    @Override
+    public void chat() {
+        // Do something
+    }
+}
+
+Create a seperate interface for videoCall()
+
+
+D : DEPENDENCY INVERSION
+---------------------------
+
+"High level entities should not depend on low level entities, rather is should depend on abstraction(interface)"
+
+interface SocialMedia {
+    void sendRequest();
+    void receiveRequest();
+    void chat();
+}
+interface MediaTypeSocialMedia {
+    void videoCall();
+}
+class Whatsapp implements SocialMedia, MediaTypeSocialMedia {
+    @Override
+    public void sendRequest() {
+        // Do something
+    }
+
+    @Override
+    public void receiveRequest() {
+        // Do something
+    }
+
+    @Override
+    public void chat() {
+      // Do something
+    }
+
+    @Override
+    public void videoCall() {
+        // Do Nothing
+    }
+}
+class Twitter implements SocialMedia{
+
+    @Override
+    public void sendRequest() {
+        // Do something
+    }
+
+    @Override
+    public void receiveRequest() {
+        // Do something
+    }
+
+    @Override
+    public void chat() {
+        // Do something
+    }
+}
+class Media {
+    // inject using interface
+    private static SocialMedia socialMedia;
+    
+    public Media(SocialMedia socialMedia) {
+        this.socialMedia = socialMedia;
+    }
+    
+    public static void main(String[] args) {
+       socialMedia.chat();
+    }
+}
+
+
+
