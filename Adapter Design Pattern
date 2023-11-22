@@ -1,0 +1,53 @@
+package designpatterns;
+
+// Let's say I have an iPhone and forgot my charger, i asked my friend for a charger. But he's having a samsung phone.
+// Both pins are different, how do I charge now? That's where I need a connector or Adapter.
+
+interface Pen {
+    void write(String message);
+}
+
+
+// This is like my friends Samsung charger, I can't use it directly to write an assignment as I need a pen for it.
+// and PilotPen does not implement a Pen, hence we need an adapter here.
+class PilotPen {
+    public void writeMessage(String message) {
+        System.out.println(message);
+    }
+}
+
+class PenAdapter implements Pen {
+    private PilotPen pilotPen = new PilotPen();
+
+    @Override
+    public void write(String message) {
+        pilotPen.writeMessage(message);
+    }
+}
+
+
+
+class AssignmentWork {
+    private Pen p;
+
+    public Pen getP() {
+        return p;
+    }
+
+    public void setP(Pen p) {
+        this.p = p;
+    }
+
+    public void doAssignment(String message) {
+        p.write(message);
+    }
+}
+
+public class AdapterDesignPattern {
+    public static void main(String[] args) {
+        Pen pen = new PenAdapter();
+        AssignmentWork assignmentWork = new AssignmentWork();
+        assignmentWork.setP(pen);
+        assignmentWork.doAssignment("My first Assignment!");
+    }
+}
