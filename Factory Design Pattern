@@ -1,0 +1,63 @@
+Factory Design pattern is a Creational Design pattern, helps in loose coupling of entities. We just pass in the input and get an object according to the input
+
+package designpatterns;
+
+interface Developer {
+    void printSalary();
+}
+
+class BackendDeveloper implements Developer {
+    @Override
+    public void printSalary() {
+        System.out.println("200000");
+    }
+}
+class FrontEndDeveloper implements Developer {
+    @Override
+    public void printSalary() {
+        System.out.println("140000");
+    }
+}
+
+class QADeveloper implements Developer {
+    @Override
+    public void printSalary() {
+        System.out.println("100000");
+    }
+}
+
+class DeveloperFactory {
+    public static Developer getInstance(String developer) {
+        switch (developer){
+            case "BackendDeveloper" :
+                return new BackendDeveloper();
+            case "FrontEndDeveloper" :
+                return new FrontEndDeveloper();
+            case "QADeveloper" :
+                return new QADeveloper();
+            default:
+                return null;
+        }
+    }
+}
+
+public class FactoryDesignPattern {
+    public static void main(String[] args) {
+        // Here we have tightly coupled the developer as we are creating the objects manually
+        Developer backendDeveloper = new BackendDeveloper();
+        Developer frontendDeveloper = new FrontEndDeveloper();
+        Developer qaDeveloper = new QADeveloper();
+        backendDeveloper.printSalary();
+        frontendDeveloper.printSalary();
+        qaDeveloper.printSalary();
+
+        // In Factory design pattern, we just need to pass in the input and based on the input
+        // we will get the respective object
+        Developer beDeveloper = DeveloperFactory.getInstance("BackendDeveloper");
+        Developer feDeveloper = DeveloperFactory.getInstance("FrontEndDeveloper");
+        Developer qDeveloper = DeveloperFactory.getInstance("QADeveloper");
+        beDeveloper.printSalary();
+        feDeveloper.printSalary();
+        qDeveloper.printSalary();
+    }
+}
