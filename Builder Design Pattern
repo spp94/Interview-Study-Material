@@ -1,0 +1,119 @@
+package designpatterns;
+
+class Employee {
+    private int employeeId;
+    private String employeeName;
+    private String employeeDepartment;
+    private String mobileNumber;
+    private String landlineNumber;
+
+    public Employee(int employeeId, String employeeName, String employeeDepartment, String mobileNumber, String landlineNumber) {
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.employeeDepartment = employeeDepartment;
+        this.mobileNumber = mobileNumber;
+        this.landlineNumber = landlineNumber;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public String getEmployeeDepartment() {
+        return employeeDepartment;
+    }
+
+    public void setEmployeeDepartment(String employeeDepartment) {
+        this.employeeDepartment = employeeDepartment;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public String getLandlineNumber() {
+        return landlineNumber;
+    }
+
+    public void setLandlineNumber(String landlineNumber) {
+        this.landlineNumber = landlineNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", employeeName='" + employeeName + '\'' +
+                ", employeeDepartment='" + employeeDepartment + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", landlineNumber='" + landlineNumber + '\'' +
+                '}';
+    }
+}
+
+class EmployeeBuilder {
+    private int employeeId;
+    private String employeeName;
+    private String employeeDepartment;
+    private String mobileNumber;
+    private String landlineNumber;
+
+    public EmployeeBuilder setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+        return this;
+    }
+
+    public EmployeeBuilder setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        return this;
+    }
+
+    public EmployeeBuilder setEmployeeDepartment(String employeeDepartment) {
+        this.employeeDepartment = employeeDepartment;
+        return this;
+    }
+
+    public EmployeeBuilder setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+        return this;
+    }
+
+    public EmployeeBuilder setLandlineNumber(String landlineNumber) {
+        this.landlineNumber = landlineNumber;
+        return this;
+    }
+
+    public Employee getEmployee() {
+        return new Employee(employeeId, employeeName, employeeDepartment, mobileNumber, landlineNumber);
+    }
+}
+
+public class BuilderDesignPattern {
+    public static void main(String[] args) {
+        // This is how we normally create object, we need to pass in all the parameters in order to create an object.
+        // We need to know the sequence of parameters and may have to pass something which is not even relevant to a user
+        Employee e1 = new Employee(1, "Shubham", "Tech", "7976620247", null);
+        System.out.println(e1);
+
+        // Let's say an employee only has id, name and dept. Yet to take a mobile and landline number
+        // If we use builder design patter to create objects, we only need to pass the fields we need.
+        Employee e2 = new EmployeeBuilder().setEmployeeId(1).setEmployeeName("Shubham").setEmployeeDepartment("Tech").getEmployee();
+        System.out.println(e2);
+    }
+}
