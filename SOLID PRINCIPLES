@@ -1,6 +1,6 @@
 SOLID PRINCIPLES
 -----------------
-All the developers should be following these principles in order to create a roubst, maintenable, 
+All the developers should be following these principles in order to create a roubst, maintenable, understandable, extensible,
 highly readable and flexible system.
 
 S : SINGLE RESPONSIBILITY PRINCIPLE
