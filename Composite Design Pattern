@@ -1,0 +1,77 @@
+package designpatterns;
+
+import java.util.*;
+
+// Composite Design Pattern is a part of Creational Design Pattern
+// Whenever we have a heirarchial object structure, we can use Composite Design Patter.
+
+//                                            Manager(Venkat)
+//
+//                       Giri                      Revathi                           Sohail
+//
+//               Shubham  Arv  Vigneys         KB        Vignesh                 Vishal   Amala
+
+
+
+interface Employees {
+    void printSalary();
+}
+
+class Leaf implements Employees {
+    private String name;
+    private double salary;
+
+    public Leaf(String name, double salary) {
+        this.name = name;
+        this.salary = salary;
+    }
+
+    @Override
+    public void printSalary() {
+        System.out.println(name + " : " + salary);
+    }
+}
+
+class Composite implements Employees {
+    private String name;
+
+    private List<Employees> employees = new ArrayList<>();
+
+    public Composite(String name) {
+        this.name = name;
+    }
+
+    public void addEmployees(Employees e) {
+        this.employees.add(e);
+    }
+
+    @Override
+    public void printSalary() {
+        System.out.println(name);
+        for(Employees e : employees) {
+            e.printSalary();
+        }
+    }
+}
+
+public class CompositeDesignPattern {
+    public static void main(String[] args) {
+        Employees beDeveloper = new Leaf("BE Developer", 250000);
+        Employees feDeveloper = new Leaf("FE Developer", 150000);
+        Employees qaDeveloper = new Leaf("QA Developer", 125000);
+        Employees uxDeveloper = new Leaf("UX Developer", 130000);
+        Composite techManager = new Composite("BE Tech Manager");
+        techManager.addEmployees(beDeveloper);
+        techManager.addEmployees(feDeveloper);
+        Composite uiManager = new Composite("FE Tech Manager");
+        uiManager.addEmployees(uxDeveloper);
+        Composite qaManager = new Composite("QA Manager");
+        qaManager.addEmployees(qaDeveloper);
+        Composite manager = new Composite("Manager");
+        manager.addEmployees(techManager);
+        manager.addEmployees(uiManager);
+        manager.addEmployees(qaManager);
+        beDeveloper.printSalary();
+        manager.printSalary();
+    }
+}
