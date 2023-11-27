@@ -47,7 +47,7 @@ Cache Confguration
 4. When you use Message Queue
 Message Queue Confguration
 
-5. When you use NoSQL database
+5. When you use NoSQL databas
 NoSQL database configuration
 
 
@@ -68,6 +68,23 @@ What is IOC?
 Spring IOC stands for Inversion of control, means inverting the control of creating object using new keyword to the Spring framework/container.
 Now we do not have to manually create these objects, Spring has a IOC container which has all the beans registered in it. IOC container is responsible 
 for giving us the bean instance.
+
+Spring Bean lifecycle
+----------------------
+Lifecyle of a human -> Birth -> What he did in life -> Death
+Similarly even the spring bean has a lifecycle:
+1. Spring IOC Container is started.
+2. Container creates the instance as per the request
+3. Creates and inject all the required dependencies.
+4. Destroyed when container is closed.
+
+@PostConstruct annotation
+--------------------------
+The PostConstructor Annotation is used on a method that needs to be executed after dependency injection is done to perfor any initialization.
+
+@PreDestroy annotation
+-----------------------
+The PreDestroy annotation is used on a method as a callback notification to signal that the instance is in the process of being removed by the container.
 
 
 ------------------------------------------------------------------------------------------------------------------------------
