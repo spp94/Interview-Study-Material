@@ -63,6 +63,13 @@ Different ways to create a Spring Boot Application
 2. Using Spring Starter Project in Spring Tool Suite(STS) or Eclipse
 
 
+What is IOC?
+-------------
+Spring IOC stands for Inversion of control, means inverting the control of creating object using new keyword to the Spring framework/container.
+Now we do not have to manually create these objects, Spring has a IOC container which has all the beans registered in it. IOC container is responsible 
+for giving us the bean instance.
+
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 package com.restapi.com;
