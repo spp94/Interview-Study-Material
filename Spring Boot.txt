@@ -90,6 +90,25 @@ Difference between @Autowired and @Inject annotation?
 ----------------------------------------------------
 The @Inject annotation also serves the same purpose as @Autowired. The main difference between them is that @Inject is standard annotation for dependency injection and @Autowired is Spring specific.
 
+Scope of a Bean in Spring
+---------------------------
+1. Singleton - The bean instance will be only once and same instance will be returned by IOC container. It is the default scope
+2. Prototype - The bean instance will be created each time when requested.
+3. Request - The bean instance will be created per HTTP Request.
+4. Session - The bean instance will be created per HTTP Session.
+
+example: on how to change the bean scope
+
+@Bean
+@Scope("prototype")
+public Person personPrototype() {
+    return new Person();
+}
+
+@Bean annotation
+-----------------
+One of the most important annotations in spring is the @Bean annotation which is applied on a method to specify that it returns a bean to be managed by Spring context. 
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 package com.restapi.com;
