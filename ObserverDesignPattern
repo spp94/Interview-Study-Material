@@ -1,0 +1,71 @@
+package designpatterns;
+
+import java.util.*;
+
+// Youtube uses observer design pattern to notify if a new video is uploaded by the channel the user has subscribed.
+// It notifies all the observers of a change in state of the subject.
+class Subscriber {
+    private String name;
+    private Channel channel;
+
+    public Subscriber(String name) {
+        this.name = name;
+    }
+
+    public void update() {
+        System.out.println("Hey " + name + ", " + channel.title + " video uploaded");
+    }
+
+    public void subscribeChannel(Channel channel) {
+        this.channel = channel;
+    }
+}
+
+class Channel {
+    public String title;
+    private List<Subscriber> subscriberList;
+
+    public Channel(String title) {
+        this.title = title;
+        this.subscriberList = new ArrayList<>();
+    }
+
+    public void subscribe(Subscriber subscriber) {
+        this.subscriberList.add(subscriber);
+    }
+
+    public void unSubscribe(Subscriber subscriber) {
+        this.subscriberList.remove(subscriber);
+    }
+
+    public void notifySubscribers() {
+        for(Subscriber subscriber : this.subscriberList) {
+            subscriber.update();
+        }
+    }
+
+    public void updateChannel(String title) {
+        this.title = title;
+        notifySubscribers();
+    }
+}
+
+public class ObserverDesignPattern {
+    public static void main(String[] args) {
+        Channel telusko = new Channel("Telusko");
+        Subscriber s1 = new Subscriber("Shubham");
+        Subscriber s2 = new Subscriber("Archana");
+        Subscriber s3 = new Subscriber("Soumya");
+        Subscriber s4 = new Subscriber("Aashi");
+        s1.subscribeChannel(telusko);
+        s2.subscribeChannel(telusko);
+        s3.subscribeChannel(telusko);
+        s4.subscribeChannel(telusko);
+        telusko.subscribe(s1);
+        telusko.subscribe(s2);
+        telusko.subscribe(s3);
+        telusko.subscribe(s4);
+
+        telusko.updateChannel("Java programming!");
+    }
+}
