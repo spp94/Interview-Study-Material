@@ -1,0 +1,106 @@
+package designpatterns;
+
+import java.util.*;
+
+// Prototype design pattern is also a creational design pattern
+// We can use both Factory Design pattern or Prototype Design pattern
+// Let's assume we are creating an object which needs data from DB to be used as parameters for object initialization.
+// Now, should we be hitting DB everytime for each objects? No right. We could simple clone the first object and use it.
+// We will do deep copy of first object.
+class Book{
+    private int bookId;
+    private String bookName;
+
+    public Book(int bookId, String bookName) {
+        this.bookId = bookId;
+        this.bookName = bookName;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", bookName='" + bookName + '\'' +
+                '}';
+    }
+}
+
+class BookShop implements Cloneable{
+    private String shopName;
+    private List<Book> bookList = new ArrayList<>();
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public List<Book> getBookList() {
+        return bookList;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public void loadData() {
+        for(int i = 1; i <= 10; i++) {
+            this.getBookList().add(new Book(i, "Book" + i));
+        }
+    }
+
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
+    }
+
+    @Override
+    protected BookShop clone() {
+        BookShop bookShop = new BookShop();
+        bookShop.setShopName(this.shopName);
+        List<Book> tempBooks = new ArrayList<>();
+        for (Book book : this.getBookList()) {
+            Book b = new Book(book.getBookId(), book.getBookName());
+            tempBooks.add(b);
+        }
+        bookShop.setBookList(tempBooks);
+
+        return bookShop;
+    }
+
+    @Override
+    public String toString() {
+        return "BookShop{" +
+                "shopName='" + shopName + '\'' +
+                ", bookList=" + bookList +
+                '}';
+    }
+}
+
+public class PrototypeDesignPattern {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        BookShop bookShop1 = new BookShop();
+        bookShop1.setShopName("Universal");
+        bookShop1.loadData();
+        System.out.println(bookShop1);
+
+        BookShop bookShop2 = bookShop1.clone();
+        bookShop1.getBookList().remove(2);
+        bookShop1.getBookList().get(0).setBookName("Book Sadan");
+        System.out.println(bookShop1);
+        System.out.println(bookShop2);
+    }
+}
