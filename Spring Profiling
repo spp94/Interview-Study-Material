@@ -1,0 +1,43 @@
+In a Spring Boot application, you can manage multiple environments by using Spring Profiles. 
+Profiles allow you to define sets of configuration for different environments, and you can activate
+a specific profile based on your deployment environment. Here's how you can switch among different environments using Spring Profiles:
+
+Create Configuration Files for Each Environment:
+-------------------------------------------------
+
+Create separate configuration files for each environment. For example, you might have application.properties for the default configuration
+and additional files like application-dev.properties, application-prod.properties, etc., for specific environments.
+Use spring.profiles.active Property:
+
+Specify the active profile by setting the spring.profiles.active property in your application's configuration. You can set this property in different ways:
+In application.properties or application.yml:
+
+spring.profiles.active=dev
+
+Configuration File Naming Convention:
+--------------------------------------
+
+Spring Boot follows a naming convention for profile-specific configuration files. If your active profile is dev, 
+Spring Boot will automatically look for application-dev.properties or application-dev.yml and merge its properties
+with the default configuration.
+Using @Profile Annotation:
+
+You can also use the @Profile annotation on specific beans or components to make them active only for certain profiles. For example:
+
+@Component
+@Profile("dev")
+public class DevDataSourceConfig {
+    // Configuration for the 'dev' profile
+}
+
+YAML Configuration:
+-------------------
+If you prefer YAML for your configuration, you can use the same naming conventions with YAML files. For example, application-dev.yml.
+Default Profile:
+
+If you don't explicitly set an active profile, Spring Boot will use the default configuration specified in application.properties or application.yml.
+
+Here's a quick summary of how you can use profiles in different scenarios:
+----------------------------------------------------------------------------
+Active Profiles in application.properties or application.yml:
+spring.profiles.active=dev
