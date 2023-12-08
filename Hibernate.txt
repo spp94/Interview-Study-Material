@@ -310,6 +310,7 @@ class Student {
 	private String name;
 	private int marks;
 	@ManyToMany(mappedBy="student")
+        @JoinColumn(name = "laptop_id")
 	private List<Laptop> laptop;
 	// getters and setters
 }
