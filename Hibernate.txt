@@ -806,3 +806,11 @@ em.getTransaction().commit();
 
 System.out.println(alien);
 
+-------------------------------------------------------------------------------
+
+spring.jpa.hibernate.ddl-auto=update
+
+//none : The default for MySql, No changes is made to the database structure.
+// update : Hibernate changes the entities according to the given structure.
+// create : creates the database everytime but does not drop it on close.
+// create-drop : Create the database and drops it when SessionFactory closes.
