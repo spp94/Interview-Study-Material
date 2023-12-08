@@ -1,3 +1,4 @@
+Hibernate is a Java framework that simplifies the development of Java application to interact with the database.
 Hibernate is one of the best available ORM frameworks for Java.
 Everything in the world revolves around the data. Now to connect the data(Database) with code we need a connector.
 In hibernate we are fetching data from the application and storing it in the Database. 
