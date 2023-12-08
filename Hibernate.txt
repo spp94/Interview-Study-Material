@@ -309,13 +309,17 @@ class Student {
 	private int rollNumber;
 	private String name;
 	private int marks;
-	@ManyToMany(mappedBy="student")
+	@ManyToMany(mappedBy="student", cascade = CascadeType.ALL)
         @JoinColumn(name = "laptop_id")
 	private List<Laptop> laptop;
 	// getters and setters
 }
 
-
+cascade is used to ensure if an action is performed on one entity, the same action should
+be performed on the relevant mapped entity.
+CascadeType.ALL - It will work for all actions
+CascadeType.REMOVE - It will work only for remove
+CascadeType.PERSIST - It will work only for save
 
 
 --------------------------------------------------------------------------------------------------
