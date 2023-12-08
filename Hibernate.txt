@@ -730,10 +730,18 @@ System.out.println(student);
 Student student = session.load(Student.class, 6);
 System.out.println(student);
 
+Here get will first fire Select * from Student where rollNumber = 6 and fetch the student details and store
+it in the cache, next time it won't fire a select request and rather fetch the details from the cache directly.
+
+In case of Load, it gives the initialized object with default values(proxy object). When we try to fetch the value
+of this object then it actually makes the Select query call and get the data. This is Lazy Initialization, hence a better performance.
+
 1. GET will load and get the object to us, whereas load will only give us the proxy object and load only when we try to use it.
 GET will fire 
 Select * from Student where rollNumber = 6
 WHEREAS, LOAD will not fire any request directly.
+
+
 
 2. If the record does not exists, then we will get null. Whereas for load we get an object not found error.
 
