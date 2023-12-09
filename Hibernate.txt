@@ -828,3 +828,31 @@ spring.jpa.hibernate.ddl-auto=update
 // update : Hibernate changes the entities according to the given structure.
 // create : creates the database everytime but does not drop it on close.
 // create-drop : Create the database and drops it when SessionFactory closes.
+
+
+----------------------------------------------------------------------------------
+
+Hibernate Object life cycle?
+------------------------------
+
+Employee e = new Employee();
+e.setEid(1);
+e.setEName("Shubham");
+// Till now the object is neither in session object nor in database. This is the Transient state
+
+Configuration configuration = new Configuration();
+configuration.configure("hibernate-cfg.xml");
+SessionFactory sessionFactory = configuration.buildSessionFactory();
+Session session = sessionFactory.openSession();
+
+session.save(e); // Now the employee object is in both the session object and database, this is Persistence state.
+
+e.setName("Satyam"); 
+// Since the object is still in persistent state, the name will be updated in the database as Satyam
+
+
+session.remove(e); 
+// Now the object will be removed from the database but will be there in session object, this is Removed state
+
+session.close();
+// Now the object is only in database and not in session object, hence it is Detached state.
