@@ -639,6 +639,14 @@ for(Object[] student : students)
 {
 }
 
+Update/Delete using HQL
+------------------------
+Query query = session.createQuery("Delete from Employees where name = :name and city = :city";
+query.setParameter("name", "Shubham");
+query.setParameter("city", "Lucknow");
+List<Employee> employees = query.executeUpdate();
+
+
 
 With aggregate functions?
 
