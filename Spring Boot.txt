@@ -544,9 +544,47 @@ How to disable a class from Auto configuration?
 
 
 
+Qualifier Annotation
+---------------------
 
+@Component
+class Student {
+  private String name;
+  public Student(String name) {
+     this.name = name;
+  }
+  public void studying() {
+     System.out.println(this.name + " is studying");
+  }
+}
 
+@Configuration
+public class MyConfiguration {
+@Bean("Student1")
+public Student getStudent1() {
+   return new Student("Student1");
+}
 
+@Bean("Student2")
+public Student getStudent2() {
+   return new Student("Student2");
+}
+}
+
+@SprintBootApplication
+public class MySpringBootApplication 
+{
+  @Autowired
+  @Qualifier("Student1")
+  private Student student
+  public static void main(String[] args) 
+  {
+     SprintApplication.run(MySpringBootApplication.class, args);
+     student.studying();
+  }
+}
+
+// Output : Student1 is studying, if we don't use Qualifier Spring will throw exception as it knows two way of creating Student object and will be confused. Hence we need to state which object we want using Qualifier annotation.
 
 
 
