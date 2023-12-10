@@ -485,3 +485,47 @@ public class Test {
         thread2.start();
     }
 }
+
+----------------------------------------------------------------------------------------
+Deadlock
+---------
+When one thread has acquired lock on a resource1, other thread has acquired lock on resource2. And both of them wants lock on resource2 and resource1 now. This is a Deadlock situation and both threads will be in waiting state forever.
+
+public class Deadlock {
+    public static void main(String[] args) {
+        Object lock1 = new Object();
+        Object lock2 = new Object();
+
+        Thread thread1 = new Thread(() -> {
+            synchronized (lock1) {
+                try { Thread.sleep(1000) ;} catch (Exception e) {}
+                synchronized (lock2) {
+                    System.out.println("Lock Acquired by Thread " + Thread.currentThread());
+                }
+            }
+        }, "Thread1");
+        Thread thread2 = new Thread(() -> {
+            synchronized (lock2) {
+                try { Thread.sleep(1000) ;} catch (Exception e) {}
+                synchronized (lock1) {
+                    System.out.println("Lock Acquired by Thread " + Thread.currentThread());
+                }
+            }
+        }, "Thread2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
