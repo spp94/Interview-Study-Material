@@ -206,6 +206,7 @@ public class SpringComponent{
 
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"mypackage"})
 public class SpringbootBackendApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(SpringbootBackendApplication.class);
