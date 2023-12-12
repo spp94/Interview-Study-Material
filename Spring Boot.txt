@@ -62,6 +62,11 @@ Different ways to create a Spring Boot Application
 1. Using Spring Initializer
 2. Using Spring Starter Project in Spring Tool Suite(STS) or Eclipse
 
+How to run Spring Boot Application using terminal?
+----------------------------------------------------
+
+mvn spring-boot:run
+
 
 What is IOC?
 -------------
