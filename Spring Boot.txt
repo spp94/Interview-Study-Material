@@ -597,6 +597,53 @@ public class MySpringBootApplication
 // Output : Student1 is studying, if we don't use Qualifier Spring will throw exception as it knows two way of creating Student object and will be confused. Hence we need to state which object we want using Qualifier annotation.
 
 
+----------------------------------------------------------------------------------------------------------
+
+Handling exceptions thrown by all Controllers at a common class
+-----------------------------------------------------------------
+
+in /entity package
+--------------------
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ErrorMessage
+{
+   private HttpStatus status;
+   private String message;
+}
+
+in /error package
+-------------------
+
+@ControllerAdvice
+@ResponseStatus
+public class MyExceptionHandler extends ResponseEntityExceptionHandler 
+{
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseStatus<ErrorMessage> geResponseStatus(ResourceNotFoundException ex, WebRequest request)
+    {
+       ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage());
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
