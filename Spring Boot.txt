@@ -67,6 +67,11 @@ How to run Spring Boot Application using terminal?
 
 mvn spring-boot:run
 
+--------------------------------------------------------------------------------------------------------------
+
+Spring Boot Dev Tools dependency is needed if we don't want to restart the application after every changes.
+
+--------------------------------------------------------------------------------------------------------------
 
 What is IOC?
 -------------
