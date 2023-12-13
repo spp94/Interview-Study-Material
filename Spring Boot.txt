@@ -646,6 +646,23 @@ Controller
 @Value("welcome.message")
 private String welcomeMessage;
 
+-----------------------------------------------------------------------------------------------------------------
 
+Why do we need a yml file when we already have application.properties file?
 
+yml file is human readable and understandable. It removed code duplication as well.
 
+application.properties
+-----------------------
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+application.yml
+----------------
+
+spring:
+  datasource:
+    url:
+    username:
+    password:
