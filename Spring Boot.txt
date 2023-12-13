@@ -666,3 +666,32 @@ spring:
     url:
     username:
     password:
+
+-----------------------------------------------------------------------------------------------------------------
+
+How to create a jar file?
+----------------------------
+
+Go to terminal,
+mvn clean install
+cd target
+java -jar mySpringBoot.jar --spring.profiles.active=prod
+
+------------------------------------------------------------------------------------------------------------------
+
+Actuator
+----------
+
+localhost:8080/actuator
+by default has two endpoints only enabled
+localhost:8080/actuator/health
+localhost:8080/actuator/info
+
+So as to enable all the endpoints and metrics, add the following configuration in yml file
+
+management:
+  endpoints:
+     web:
+       exposure:
+          include:"*"
+
