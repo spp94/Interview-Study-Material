@@ -629,38 +629,22 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler
     }
 }
 
+-----------------------------------------------------------------------------------------------------------------
+
+How to read some value from the application.properties file?
+--------------------------------------------------------------
+
+application.properties
+-----------------------
+
+welcome.message = Welcome to Tatanagar!!!
 
 
+Controller
+------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@Value("welcome.message")
+private String welcomeMessage;
 
 
 
