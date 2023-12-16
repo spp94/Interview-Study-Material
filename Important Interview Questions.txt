@@ -325,3 +325,16 @@ call
 (Integer)
 in A match
 
+-----------------------------------------------------------------------------------
+
+How many objects will be created in this?
+
+// 1 object due to new keyword in heap memory
+// 1 object in SCP due to literal "Shubham"
+String s1 = new String("Shubham");
+// Now since Shubham is already there in SCP, it will not create any object.
+String s2 = "Shubham";
+
+System.out.println(s1.intern().hashCode() == s2.hashCode()); // TRUE
+
+intern() is used to get the SCP reference of the object
