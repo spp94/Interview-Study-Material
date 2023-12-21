@@ -324,6 +324,8 @@ import net.javaguides.springboot.model.Employee;
 public interface EmployeeRepository extends JpaRepository<Employee, Long>{
   @Query("select u from Employee e where e.firstName like %?1")
   public List<Employee> getEmployeeByFirstName(String firstName) 
+  @Query("", nativeQuery = true) // means SQL query
+  public List<Employee> getEmployeesByFilter(String filter);
 }
 
 
