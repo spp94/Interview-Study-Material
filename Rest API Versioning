@@ -1,0 +1,27 @@
+Why do we need to version our RESTful API?
+The best approach to versioning is NOT to do it. Yeah, that’s right. Do not version as long as versioning is not needed.
+
+Build your services to backward compatible so that you can avoid versioning as much as possible!
+
+However there are a number of situations where versioning is needed.
+
+Let’s consider an example.
+
+You had this version of the student service initially
+
+{
+  "name": "Bob Charlie"
+}
+At a later point, you wanted to split the name up. So, you created this version of the service.
+
+{
+  "name": {
+    "firstName": "Bob",
+    "lastName": "Charlie"
+  }
+}
+You can support both these requests from the same service, but it becomes complex as the requirements diversify for each of the versions.
+
+In these kind of situations, versioning becomes mandatory.
+
+Let’s create a simple project and understand the 4 different approaches to versioning your RESTful services.
