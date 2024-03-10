@@ -1,0 +1,27 @@
+SERVICE REGISTRY
+-----------------
+
+When we have multiple services instances running, it's difficult for the microservices to know which REST API URL to hit for calling a microservices.
+Hence, we needed a way out to keep a track of all the microservices instances along with then names. 
+Take it as something like, phone book which has all the phone numbers along with usernames and there address.
+
+Client Side Service Registry
+-----------------------------
+User ------------------> www.google.com/pizzas
+        1st api call            |
+     		                    |
+								|                                       2nd API call done by client
+							Gives the phone number of the pizza shop ---------------------------------> Pizza Shop
+
+Here, the client will get the phone number from the google and make a call to the shop and order a pizza. This is not recommended way as client has to 
+make two api calls.							
+Can be achived using Eureka.
+
+Server Side Service Registry
+-----------------------------
+                                                        Call Room 111
+User -------------------->  Calls to Hotel Reception ----------------------> Reception will forward it to the room number 111.
+
+Here, the client does only 1 api call, the api gateway with the help of service registry make a call to appropriate API.
+Can be achived using NGINX, AWS.
+
