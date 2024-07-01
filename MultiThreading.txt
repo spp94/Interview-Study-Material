@@ -1,4 +1,4 @@
-Two ways of creating a Thread:
+Two ways of creating a Thread: 
 1. Using Thread class
 2. Using Runnable Interface
 
